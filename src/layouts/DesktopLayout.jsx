@@ -1,7 +1,12 @@
+import DesktopIcons from '../components/DesktopIcons';
+import Taskbar from '../components/Taskbar';
+import './DesktopLayout.css';
+
 export default function DesktopLayout() {
   return (
-    <div className="w-screen h-screen bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-center justify-center">
-      Desktop (Windows Mode)
+    <div className="desktop-layout">
+      <DesktopIcons />
+      <Taskbar />
     </div>
   );
 }

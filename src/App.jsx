@@ -1,26 +1,20 @@
-import { useEffect, useState } from "react";
-import BootScreen from "./components/BootScreen";
-import DesktopLayout from "./layouts/DesktopLayout";
-import MobileLayout from "./layouts/MobileLayout";
+import { useState } from 'react'
+import './App.css'
+import LoginScreen from './components/LoginScreen'
+import DesktopLayout from './layouts/DesktopLayout'
 
 function App() {
-  const [isBooting, setIsBooting] = useState(true);
+  const [showDesktop, setShowDesktop] = useState(false)
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsBooting(false);
-    }, 3000); // 3 seconds
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isBooting) {
-    return <BootScreen />;
-  }
-
-  const isMobile = window.innerWidth < 1024;
-
-  return isMobile ? <MobileLayout /> : <DesktopLayout />;
+  return (
+    <>
+      {!showDesktop ? (
+        <LoginScreen onLoginComplete={() => setShowDesktop(true)} />
+      ) : (
+        <DesktopLayout />
+      )}
+    </>
+  )
 }
 
-export default App;
+export default App
