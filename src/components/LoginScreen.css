@@ -231,18 +231,54 @@
   }
 }
 
-/* Responsive design */
+/* Mobile & Tablet Styles */
 @media (max-width: 768px) {
-  .windows-text {
-    font-size: 2rem;
+  .login-container {
+    overflow: hidden;
+    height: 100vh;
+    position: fixed;
   }
 
-  .loading-container {
-    width: 250px;
+  .login-content {
+    justify-content: flex-start;
+    padding-top: 80px;
+    overflow: hidden;
   }
 
-  .windows-logo svg {
+  .avatar {
+    width: 240px;
+    height: 240px;
+    transform: scale(0.85);
+  }
+
+  .user-name {
+    font-size: 1.6rem;
+    margin: 0 0 20px 0;
+  }
+
+  .action-container {
+    position: relative;
+    top: 0;
+    margin-top: 10px;
+  }
+
+  .loading-wrapper {
     width: 60px;
     height: 60px;
+  }
+
+  .loader .dot {
+    height: 3px;
+    width: 3px;
+    top: 22px;
+  }
+
+  .welcome-text {
+    font-size: 1.1rem;
+  }
+
+  .sign-in-button {
+    padding: 10px 30px;
+    font-size: 0.9rem;
   }
 }
