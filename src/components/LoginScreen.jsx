@@ -5,6 +5,19 @@ export default function LoginScreen({ onLoginComplete }) {
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  // Handle keyboard events (Enter and Space keys)
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && !isLoading) {
+        e.preventDefault();
+        handleStart();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isLoading]);
+
   // Handle click to start loading and play sound
   const handleStart = () => {
     if (isLoading) return;

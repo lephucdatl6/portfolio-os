@@ -43,3 +43,20 @@
   padding: 0 20px;
   z-index: 100;
 }
+
+/* Mobile & Tablet Styles */
+@media (max-width: 768px) {
+  .desktop-layout {
+    background-attachment: scroll;
+  }
+
+  .desktop-icons {
+    top: 10px;
+    left: 10px;
+  }
+
+  .taskbar {
+    height: 60px;
+    padding: 0 8px;
+  }
+}
