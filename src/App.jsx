@@ -3,6 +3,7 @@ import './App.css'
 import LoginScreen from './components/LoginScreen'
 import DesktopLayout from './layouts/DesktopLayout'
 import Mail from './components/Mail'
+import ContactForm from './components/ContactForm'
 
 function App() {
   const [showDesktop, setShowDesktop] = useState(false)
@@ -67,6 +68,11 @@ function App() {
               isMaximized={maximizedApps.mail}
               isMinimized={minimizedApps.mail}
             />
+          )}
+          {openApps.contact && (
+            <div style={{position:'fixed',right:20,bottom:20,background:'white',padding:16,borderRadius:8,boxShadow:'0 6px 24px rgba(0,0,0,0.12)'}}>
+              <ContactForm />
+            </div>
           )}
         </>
       )}

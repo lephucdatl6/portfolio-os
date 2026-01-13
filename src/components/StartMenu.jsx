@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import './StartMenu.css';
 
-export default function StartMenu({ isOpen, onClose }) {
+export default function StartMenu({ isOpen, onClose, onOpenApp }) {
   const apps = [
     { id: 1, name: 'Resume', icon: '/assets/icons/pdf.jpg' },
     { id: 2, name: 'VS Code', icon: '/assets/icons/vs code.svg' },
     { id: 3, name: 'Projects', icon: '/assets/icons/folder.png' },
-    { id: 4, name: 'Mail', icon: '/assets/icons/mail.png' },
+    { id: 4, name: 'Contact Me', icon: '/assets/icons/mail.png', action: 'mail' },
   ];
+
+  const handleAppClick = (app) => {
+    if (app.action && onOpenApp) {
+      onOpenApp(app.action);
+      onClose();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -20,7 +27,7 @@ export default function StartMenu({ isOpen, onClose }) {
           <h3 className="section-title">Pinned</h3>
           <div className="start-menu-grid">
             {apps.map(app => (
-              <button key={app.id} className="start-menu-item" title={app.name}>
+              <button key={app.id} className="start-menu-item" title={app.name} onClick={() => handleAppClick(app)}>
                 <img src={app.icon} alt={app.name} />
                 <span>{app.name}</span>
               </button>

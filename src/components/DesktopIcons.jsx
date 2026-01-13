@@ -27,10 +27,11 @@ const INITIAL_ICONS = [
   },
   {
     id: 4,
-    name: 'Mail',
+    name: 'Contact Me',
     image: '/assets/icons/mail.png',
     x: 20,
     y: 320,
+    appKey: 'mail',
   },
 ];
 
@@ -86,13 +87,17 @@ export default function DesktopIcons({ onOpenApp, openApps = {}, minimizedApps =
 
   const handleDoubleClick = (icon) => {
     console.log(`Opening ${icon.name}`);
-    if (icon.name === 'Mail' && onOpenApp) {
-      // If mail is already open and minimized, restore it
-      if (openApps.mail && minimizedApps.mail) {
-        onMinimizeApp('mail');
-      } else if (!openApps.mail) {
-        // If mail is not open, open it
-        onOpenApp('mail');
+    
+    // Use explicit appKey if provided, otherwise convert icon name to app key
+    const appKey = icon.appKey || icon.name.toLowerCase().replace(/\s+/g, '');
+    
+    if (onOpenApp) {
+      // If app is already open and minimized, restore it
+      if (openApps[appKey] && minimizedApps[appKey]) {
+        onMinimizeApp(appKey);
+      } else if (!openApps[appKey]) {
+        // If app is not open, open it
+        onOpenApp(appKey);
       }
     }
   };

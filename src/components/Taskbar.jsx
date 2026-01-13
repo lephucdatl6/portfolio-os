@@ -32,22 +32,22 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
 
   return (
     <>
-      <StartMenu isOpen={startMenuOpen} onClose={() => setStartMenuOpen(false)} />
+      <StartMenu isOpen={startMenuOpen} onClose={() => setStartMenuOpen(false)} onOpenApp={onOpenApp} />
       <div className="taskbar">
-        {/* Left-aligned Taskbar Items */}
+        {/* Start Button - Far Left */}
+        <button 
+          className={`start-button ${startMenuOpen ? 'active' : ''}`}
+          onClick={() => setStartMenuOpen(!startMenuOpen)}
+        >
+          <img src="/assets/icons/Start_Dark.png" alt="Start" className="windows-icon" />
+        </button>
+        
+        {/* Center Apps */}
         <div className="taskbar-center">
-          {/* Start Button */}
-          <button 
-            className={`start-button ${startMenuOpen ? 'active' : ''}`}
-            onClick={() => setStartMenuOpen(!startMenuOpen)}
-          >
-            <img src="/assets/icons/Start_Dark.png" alt="Start" className="windows-icon" />
-          </button>
-          
           {/* App Icons */}
           {openApps.mail && (
             <button 
-              className={`app-icon ${minimizedApps.mail ? 'minimized' : ''}`}
+              className={`app-icon ${minimizedApps.mail ? 'minimized' : 'open'}`}
               onClick={() => onMinimizeApp('mail')} 
               title={minimizedApps.mail ? 'Restore Mail' : 'Minimize Mail'}
             >

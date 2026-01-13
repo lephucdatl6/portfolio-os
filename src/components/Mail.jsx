@@ -3,6 +3,7 @@ import './Mail.css';
 
 export default function Mail({ onClose, onMinimize, onMaximize, isMaximized, isMinimized }) {
   const [fromEmail, setFromEmail] = useState('');
+  const [name, setName] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
@@ -57,25 +58,29 @@ export default function Mail({ onClose, onMinimize, onMaximize, isMaximized, isM
       setError('Please enter your email address');
       return;
     }
+    // name is optional; no validation required
     if (!subject.trim()) {
       setError('Please enter a subject');
+      return;
+    }
+    
+    // Validate email format
+    if (!/\S+@\S+\.\S+/.test(fromEmail)) {
+      setError('Please enter a valid email address');
       return;
     }
 
     setSending(true);
     try {
-      // Send email via email service or API
+      // Send email via serverless API (Resend) - match handler payload { name, email, message }
       const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          to: 'pdat.dev@gmail.com',
+          name,
+          email: fromEmail,
           subject,
-          message: `
-      From: ${fromEmail}
-
-      ${message}
-          `,
+          message,
         }),
       });
 
@@ -83,17 +88,45 @@ export default function Mail({ onClose, onMinimize, onMaximize, isMaximized, isM
       if (response.ok) {
         setError('success');
         setFromEmail('');
+        setName('');
         setSubject('');
         setMessage('');
         setTimeout(() => setError(''), 3000);
       } else {
-        setError('Failed to send email. Please try again.');
+        // Try to parse JSON error from server, otherwise get text
+        let body = {};
+        try { body = await response.json(); } catch (e) { /* ignore */ }
+        const msg = body && (body.error || body.message) ? (body.error || body.message) : await response.text().catch(()=>response.statusText);
+        setError(msg || 'Failed to send email. Please try again.');
       }
     } catch (error) {
       setError('Error sending email: ' + error.message);
     } finally {
       setSending(false);
     }
+  };
+    const to = 'pdat.dev@gmail.com';
+    const bodyBase = fromEmail ? `From: ${fromEmail}\n\n${message || ''}` : `${message || ''}`;
+    const mailtoHref = `mailto:${to}?subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(bodyBase)}`;
+    const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(bodyBase)}`;
+
+  const openGmailApp = (e) => {
+    if (e) e.preventDefault();
+    
+    // Try to open Gmail app first (mobile)
+    const gmailAppHref = `googlegmail://co?to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(bodyBase)}`;
+    
+    // Create a temporary iframe to try opening the app
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = gmailAppHref;
+    document.body.appendChild(iframe);
+    
+    // Fallback to web Gmail after a short delay
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+      window.open(gmailHref, '_blank', 'noopener,noreferrer');
+    }, 500);
   };
 
   return (
@@ -116,6 +149,29 @@ export default function Mail({ onClose, onMinimize, onMaximize, isMaximized, isM
         <button className="mail-send-btn" onClick={handleSend} disabled={sending}>
           ➤ Send
         </button>
+        {(() => {
+          const to = 'pdat.dev@gmail.com';
+          const body = fromEmail ? `From: ${fromEmail}\n\n${message || ''}` : `${message || ''}`;
+          const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body)}`;
+          return (
+            <div className="mail-toolbar-right">
+              <a
+                className="mail-compose-link"
+                href="https://www.linkedin.com/in/dat-le-b500a61bb"
+                aria-label="Open LinkedIn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src="/assets/icons/linkedin.png" alt="LinkedIn" className="mail-compose-icon" />
+                <span className="tooltip-text">Open LinkedIn</span>
+              </a>
+              <a className="mail-compose-link" href={gmailHref} aria-label="Open in Gmail" onClick={openGmailApp}>
+                <img src="/assets/icons/gmail.png" alt="Gmail" className="mail-compose-icon" />
+                <span className="tooltip-text">Open in Gmail</span>
+              </a>
+            </div>
+          );
+        })()}
       </div>
 
       <div className="mail-content">

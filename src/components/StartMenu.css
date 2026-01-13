@@ -118,7 +118,7 @@
 
 .user-name {
   color: white;
-  font-size: 14px;
+  font-size: 25px !important;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   white-space: nowrap;

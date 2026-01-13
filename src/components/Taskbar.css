@@ -18,6 +18,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  margin-left: 8px;
 }
 
 .taskbar-apps {
@@ -90,9 +91,16 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+.app-icon.open {
+  opacity: 1;
+  background: rgba(74, 144, 226, 0.3);
+  border-bottom: 3px solid #4A90E2;
+}
+
 .app-icon.minimized {
-  opacity: 0.6;
-  border-bottom: 3px solid white;
+  opacity: 0.7;
+  background: rgba(128, 128, 128, 0.2);
+  border-bottom: 3px solid #808080;
 }
 
 .taskbar-app-icon {

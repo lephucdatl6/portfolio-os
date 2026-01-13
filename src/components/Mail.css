@@ -10,6 +10,18 @@
   z-index: 500;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow: hidden;
+  animation: mailWindowOpen 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes mailWindowOpen {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .mail-window.maximized {
@@ -89,6 +101,38 @@
   background: white;
   border-bottom: 1px solid #e0e0e0;
   flex-shrink: 0;
+}
+.mail-toolbar { display: flex; align-items: center; padding: 8px; }
+.mail-toolbar .mail-send-btn { /* reuse existing styles */ }
+.mail-toolbar-right { margin-left: auto; display:flex; align-items:center; gap: 8px; }
+.mail-compose-icon { width:20px; height:20px; cursor:pointer; }
+
+/* LinkedIn icon spacing */
+.mail-compose-link[href*="linkedin"] {
+  margin-right: 8px;
+}
+
+/* Tooltip styling for compose icons */
+.mail-compose-link { position: relative; display: inline-flex; align-items: center; }
+.mail-compose-link .tooltip-text {
+  position: absolute;
+  bottom: -34px;
+  right: 0;
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 120ms ease, transform 120ms ease;
+  pointer-events: none;
+}
+.mail-compose-link:hover .tooltip-text,
+.mail-compose-link:focus .tooltip-text {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .mail-send-btn {
