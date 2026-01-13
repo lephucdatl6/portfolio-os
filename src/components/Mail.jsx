@@ -65,16 +65,20 @@ export default function Mail({ onClose, onMinimize, onMaximize, isMaximized, isM
     setSending(true);
     try {
       // Send email via email service or API
-      const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+      const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: fromEmail,
           to: 'pdat.dev@gmail.com',
-          subject: subject,
-          message: message,
+          subject,
+          message: `
+      From: ${fromEmail}
+
+      ${message}
+          `,
         }),
       });
+
 
       if (response.ok) {
         setError('success');
