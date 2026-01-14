@@ -3,7 +3,7 @@ import './StartMenu.css';
 
 export default function StartMenu({ isOpen, onClose, onOpenApp }) {
   const apps = [
-    { id: 1, name: 'Resume', icon: '/assets/icons/pdf.jpg' },
+    { id: 1, name: 'Resume', icon: '/assets/icons/pdf.jpg', action: 'resume' },
     { id: 2, name: 'VS Code', icon: '/assets/icons/vs code.svg' },
     { id: 3, name: 'Projects', icon: '/assets/icons/folder.png' },
     { id: 4, name: 'Contact Me', icon: '/assets/icons/mail.png', action: 'mail' },

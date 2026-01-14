@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './Taskbar.css';
 import StartMenu from './StartMenu';
 
-export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimizedApps = {}, onMinimizeApp }) {
+export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimizedApps = {}, onMinimizeApp, appOpenOrder = [] }) {
   const [time, setTime] = useState(new Date());
   const [startMenuOpen, setStartMenuOpen] = useState(false);
 
@@ -30,6 +30,37 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
     });
   };
 
+  const renderAppIcon = (appName) => {
+    if (!openApps[appName]) return null;
+
+    const appConfig = {
+      resume: {
+        icon: '/assets/icons/pdf.jpg',
+        alt: 'PDF Viewer',
+        title: minimizedApps.resume ? 'Restore PDF Viewer' : 'Minimize PDF Viewer'
+      },
+      mail: {
+        icon: '/assets/icons/mail.png', 
+        alt: 'Mail',
+        title: minimizedApps.mail ? 'Restore Mail' : 'Minimize Mail'
+      }
+    };
+
+    const config = appConfig[appName];
+    if (!config) return null;
+
+    return (
+      <button 
+        key={appName}
+        className={`app-icon ${minimizedApps[appName] ? 'minimized' : 'open'}`}
+        onClick={() => onMinimizeApp(appName)} 
+        title={config.title}
+      >
+        <img src={config.icon} alt={config.alt} />
+      </button>
+    );
+  };
+
   return (
     <>
       <StartMenu isOpen={startMenuOpen} onClose={() => setStartMenuOpen(false)} onOpenApp={onOpenApp} />
@@ -44,16 +75,8 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
         
         {/* Center Apps */}
         <div className="taskbar-center">
-          {/* App Icons */}
-          {openApps.mail && (
-            <button 
-              className={`app-icon ${minimizedApps.mail ? 'minimized' : 'open'}`}
-              onClick={() => onMinimizeApp('mail')} 
-              title={minimizedApps.mail ? 'Restore Mail' : 'Minimize Mail'}
-            >
-              <img src="/assets/icons/mail.png" alt="Mail" />
-            </button>
-          )}
+          {/* App Icons in opening order */}
+          {appOpenOrder.map(appName => renderAppIcon(appName))}
         </div>
 
         {/* Right Spacer */}

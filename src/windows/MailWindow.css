@@ -13,6 +13,94 @@
   animation: mailWindowOpen 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .mail-window {
+    width: calc(100vw - 20px);
+    height: calc(100vh - 80px);
+    left: 10px !important;
+    top: 10px !important;
+    border-radius: 12px;
+  }
+
+  /* Hide resize handles on mobile */
+  .resize-handle {
+    display: none;
+  }
+
+  .mail-window.maximized {
+    width: 100vw;
+    height: calc(100vh - 60px);
+    left: 0 !important;
+    top: 0 !important;
+    border-radius: 0;
+  }
+
+  /* Prevent zoom on input focus */
+  .mail-input, 
+  .mail-textarea, 
+  input[type="email"],
+  input[type="text"],
+  textarea {
+    font-size: 16px !important;
+    transform: scale(1);
+    transition: none;
+  }
+
+  /* Better mobile form styling */
+  .mail-form {
+    padding: 16px;
+  }
+
+  .mail-header {
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .mail-input.disabled {
+    color: #333 !important;
+    font-weight: 500 !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Resize handles */
+.resize-handle {
+  position: absolute;
+  background: transparent;
+  z-index: 10;
+}
+
+.resize-top, .resize-bottom {
+  left: 5px;
+  right: 5px;
+  height: 5px;
+  cursor: ns-resize;
+}
+
+.resize-left, .resize-right {
+  top: 5px;
+  bottom: 5px;
+  width: 5px;
+  cursor: ew-resize;
+}
+
+.resize-top { top: 0; }
+.resize-bottom { bottom: 0; }
+.resize-left { left: 0; }
+.resize-right { right: 0; }
+
+.resize-top-left, .resize-top-right, .resize-bottom-left, .resize-bottom-right {
+  width: 8px;
+  height: 8px;
+}
+
+.resize-top-left { top: 0; left: 0; cursor: nw-resize; }
+.resize-top-right { top: 0; right: 0; cursor: ne-resize; }
+.resize-bottom-left { bottom: 0; left: 0; cursor: sw-resize; }
+.resize-bottom-right { bottom: 0; right: 0; cursor: se-resize; }
+
 @keyframes mailWindowOpen {
   0% {
     opacity: 0;
@@ -103,7 +191,6 @@
   flex-shrink: 0;
 }
 .mail-toolbar { display: flex; align-items: center; padding: 8px; }
-.mail-toolbar .mail-send-btn { /* reuse existing styles */ }
 .mail-toolbar-right { margin-left: auto; display:flex; align-items:center; gap: 8px; }
 .mail-compose-icon { width:20px; height:20px; cursor:pointer; }
 

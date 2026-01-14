@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import './Mail.css';
+import './MailWindow.css';
 
 export default function Mail({ onClose, onMinimize, onMaximize, isMaximized, isMinimized }) {
   const [fromEmail, setFromEmail] = useState('');
@@ -9,8 +9,12 @@ export default function Mail({ onClose, onMinimize, onMaximize, isMaximized, isM
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [size, setSize] = useState({ width: 600, height: 700 });
   const [isDragging, setIsDragging] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  const [resizeType, setResizeType] = useState('');
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0, posX: 0, posY: 0 });
 
   // Initialize position to center on mount
   useEffect(() => {
@@ -20,7 +24,7 @@ export default function Mail({ onClose, onMinimize, onMaximize, isMaximized, isM
   }, []);
 
   const handleMouseDown = (e) => {
-    if (e.target.closest('.mail-controls')) return;
+    if (e.target.closest('.mail-controls') || e.target.closest('.resize-handle')) return;
     setIsDragging(true);
     setDragOffset({
       x: e.clientX - position.x,
@@ -28,18 +32,65 @@ export default function Mail({ onClose, onMinimize, onMaximize, isMaximized, isM
     });
   };
 
+  const handleResizeStart = (e, type) => {
+    e.stopPropagation();
+    setIsResizing(true);
+    setResizeType(type);
+    setResizeStart({
+      x: e.clientX,
+      y: e.clientY,
+      width: size.width,
+      height: size.height,
+      posX: position.x,
+      posY: position.y
+    });
+  };
+
   useEffect(() => {
-    if (!isDragging) return;
+    if (!isDragging && !isResizing) return;
 
     const handleMouseMove = (e) => {
-      setPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y
-      });
+      if (isDragging) {
+        setPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y
+        });
+      }
+
+      if (isResizing) {
+        const deltaX = e.clientX - resizeStart.x;
+        const deltaY = e.clientY - resizeStart.y;
+        
+        let newWidth = resizeStart.width;
+        let newHeight = resizeStart.height;
+        let newX = resizeStart.posX;
+        let newY = resizeStart.posY;
+
+        // Handle different resize types
+        if (resizeType.includes('right')) {
+          newWidth = Math.max(300, resizeStart.width + deltaX);
+        }
+        if (resizeType.includes('left')) {
+          newWidth = Math.max(300, resizeStart.width - deltaX);
+          newX = resizeStart.posX + (resizeStart.width - newWidth);
+        }
+        if (resizeType.includes('bottom')) {
+          newHeight = Math.max(400, resizeStart.height + deltaY);
+        }
+        if (resizeType.includes('top')) {
+          newHeight = Math.max(400, resizeStart.height - deltaY);
+          newY = resizeStart.posY + (resizeStart.height - newHeight);
+        }
+
+        setSize({ width: newWidth, height: newHeight });
+        setPosition({ x: newX, y: newY });
+      }
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
+      setIsResizing(false);
+      setResizeType('');
     };
 
     document.addEventListener('mousemove', handleMouseMove);
@@ -49,7 +100,7 @@ export default function Mail({ onClose, onMinimize, onMaximize, isMaximized, isM
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragOffset]);
+  }, [isDragging, isResizing, dragOffset, resizeStart, resizeType]);
 
   const handleSend = async () => {
     setError('');
@@ -132,16 +183,59 @@ export default function Mail({ onClose, onMinimize, onMaximize, isMaximized, isM
   return (
     <div 
       className={`mail-window ${isMaximized ? 'maximized' : ''} ${isMinimized ? 'minimized' : ''}`}
-      style={!isMaximized ? { left: `${position.x}px`, top: `${position.y}px` } : {}}
+      style={!isMaximized ? { 
+        left: `${position.x}px`, 
+        top: `${position.y}px`,
+        width: `${size.width}px`,
+        height: `${size.height}px`
+      } : {}}
     >
+      {/* Resize handles */}
+      {!isMaximized && !isMinimized && (
+        <>
+          <div className="resize-handle resize-top" onMouseDown={(e) => handleResizeStart(e, 'top')}></div>
+          <div className="resize-handle resize-right" onMouseDown={(e) => handleResizeStart(e, 'right')}></div>
+          <div className="resize-handle resize-bottom" onMouseDown={(e) => handleResizeStart(e, 'bottom')}></div>
+          <div className="resize-handle resize-left" onMouseDown={(e) => handleResizeStart(e, 'left')}></div>
+          <div className="resize-handle resize-top-left" onMouseDown={(e) => handleResizeStart(e, 'top-left')}></div>
+          <div className="resize-handle resize-top-right" onMouseDown={(e) => handleResizeStart(e, 'top-right')}></div>
+          <div className="resize-handle resize-bottom-left" onMouseDown={(e) => handleResizeStart(e, 'bottom-left')}></div>
+          <div className="resize-handle resize-bottom-right" onMouseDown={(e) => handleResizeStart(e, 'bottom-right')}></div>
+        </>
+      )}
       <div className="mail-header" onMouseDown={handleMouseDown}>
-        <div className="mail-title">Mail</div>
+        <div className="mail-title">Contact Me</div>
         <div className="mail-controls">
-          <button className="mail-control-btn minimize" onClick={onMinimize} title="Minimize">−</button>
-          <button className="mail-control-btn maximize" onClick={onMaximize} title={isMaximized ? "Restore" : "Maximize"}>
+          <button 
+            className="mail-control-btn minimize" 
+            onClick={(e) => {
+              e.stopPropagation();
+              onMinimize();
+            }} 
+            title="Minimize"
+          >
+            −
+          </button>
+          <button 
+            className="mail-control-btn maximize" 
+            onClick={(e) => {
+              e.stopPropagation();
+              onMaximize();
+            }} 
+            title={isMaximized ? "Restore" : "Maximize"}
+          >
             {isMaximized ? '❒' : '□'}
           </button>
-          <button className="mail-control-btn close" onClick={onClose} title="Close">×</button>
+          <button 
+            className="mail-control-btn close" 
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }} 
+            title="Close"
+          >
+            ×
+          </button>
         </div>
       </div>
 

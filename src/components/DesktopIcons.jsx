@@ -10,6 +10,7 @@ const INITIAL_ICONS = [
     image: '/assets/icons/pdf.jpg',
     x: 20,
     y: 20,
+    appKey: 'resume', // Opens PDF file
   },
   {
     id: 2,
@@ -71,16 +72,61 @@ export default function DesktopIcons({ onOpenApp, openApps = {}, minimizedApps =
 
   const handleMouseUp = () => {
     if (dragging) {
-      // Snap to grid on drop (auto-arrange)
-      setIcons(icons.map(icon => 
-        icon.id === dragging
-          ? {
-              ...icon,
-              x: Math.round(icon.x / GRID_SIZE) * GRID_SIZE,
-              y: Math.round(icon.y / GRID_SIZE) * GRID_SIZE,
+      // Snap to grid on drop with collision detection
+      setIcons(prevIcons => {
+        return prevIcons.map(icon => {
+          if (icon.id === dragging) {
+            const snappedX = Math.round(icon.x / GRID_SIZE) * GRID_SIZE;
+            const snappedY = Math.round(icon.y / GRID_SIZE) * GRID_SIZE;
+            
+            // Check for collisions with other icons
+            const isColliding = prevIcons.some(otherIcon => 
+              otherIcon.id !== icon.id && 
+              otherIcon.x === snappedX && 
+              otherIcon.y === snappedY
+            );
+            
+            if (isColliding) {
+              // Find nearest empty grid position
+              let foundPosition = false;
+              let testX = snappedX;
+              let testY = snappedY;
+              
+              // Search in expanding spiral pattern
+              for (let radius = 1; radius <= 10 && !foundPosition; radius++) {
+                // Try positions around the target
+                const positions = [
+                  { x: testX + (radius * GRID_SIZE), y: testY },
+                  { x: testX - (radius * GRID_SIZE), y: testY },
+                  { x: testX, y: testY + (radius * GRID_SIZE) },
+                  { x: testX, y: testY - (radius * GRID_SIZE) },
+                ];
+                
+                for (const pos of positions) {
+                  if (pos.x >= 0 && pos.y >= 0) { // Keep within bounds
+                    const collision = prevIcons.some(otherIcon => 
+                      otherIcon.id !== icon.id && 
+                      otherIcon.x === pos.x && 
+                      otherIcon.y === pos.y
+                    );
+                    if (!collision) {
+                      testX = pos.x;
+                      testY = pos.y;
+                      foundPosition = true;
+                      break;
+                    }
+                  }
+                }
+              }
+              
+              return { ...icon, x: testX, y: testY };
             }
-          : icon
-      ));
+            
+            return { ...icon, x: snappedX, y: snappedY };
+          }
+          return icon;
+        });
+      });
     }
     setDragging(null);
   };
