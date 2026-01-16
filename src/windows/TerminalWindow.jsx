@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import './AboutWindow.css';
+import './TerminalWindow.css';
 
-export default function AboutWindow({ onClose, onMinimize, onMaximize, isMaximized, isMinimized }) {
+export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocus, zIndex, isMaximized, isMinimized }) {
+  const TASKBAR_HEIGHT = 60;
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [size, setSize] = useState({ width: 900, height: 700 });
   const [isDragging, setIsDragging] = useState(false);
@@ -10,7 +11,6 @@ export default function AboutWindow({ onClose, onMinimize, onMaximize, isMaximiz
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0, posX: 0, posY: 0 });
 
-  // Initialize position to center on mount
   useEffect(() => {
     const centerX = window.innerWidth / 2 - 450;
     const centerY = window.innerHeight / 2 - 350; 
@@ -18,7 +18,7 @@ export default function AboutWindow({ onClose, onMinimize, onMaximize, isMaximiz
   }, []);
 
   const handleMouseDown = (e) => {
-    if (e.target.closest('.about-controls') || e.target.closest('.resize-handle')) return;
+    if (e.target.closest('.terminal-controls') || e.target.closest('.resize-handle')) return;
     setIsDragging(true);
     setDragOffset({
       x: e.clientX - position.x,
@@ -28,10 +28,12 @@ export default function AboutWindow({ onClose, onMinimize, onMaximize, isMaximiz
 
   const handleMouseMove = (e) => {
     if (isDragging) {
-      setPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y,
-      });
+      const newX = e.clientX - dragOffset.x;
+      const newY = e.clientY - dragOffset.y;
+      const clampedX = Math.min(Math.max(newX, 0), Math.max(0, window.innerWidth - size.width));
+      const maxY = Math.max(0, window.innerHeight - TASKBAR_HEIGHT - size.height);
+      const clampedY = Math.min(Math.max(newY, 0), maxY);
+      setPosition({ x: clampedX, y: clampedY });
     }
 
     if (isResizing && resizeType) {
@@ -45,20 +47,35 @@ export default function AboutWindow({ onClose, onMinimize, onMaximize, isMaximiz
 
       if (resizeType.includes('right')) {
         newWidth = Math.max(400, resizeStart.width + deltaX);
+        // Prevent growing past right edge
+        newWidth = Math.min(newWidth, window.innerWidth - resizeStart.posX);
       }
       if (resizeType.includes('left')) {
         newWidth = Math.max(400, resizeStart.width - deltaX);
         newX = resizeStart.posX + deltaX;
+        // Clamp to viewport left
+        if (newX < 0) {
+          newX = 0;
+          newWidth = resizeStart.width + resizeStart.posX; // maintain right edge
+        }
         if (newWidth === 400) {
           newX = resizeStart.posX + (resizeStart.width - 400);
         }
       }
       if (resizeType.includes('bottom')) {
         newHeight = Math.max(300, resizeStart.height + deltaY);
+        // Prevent growing past taskbar
+        const maxHeight = window.innerHeight - TASKBAR_HEIGHT - resizeStart.posY;
+        newHeight = Math.min(newHeight, maxHeight);
       }
       if (resizeType.includes('top')) {
         newHeight = Math.max(300, resizeStart.height - deltaY);
         newY = resizeStart.posY + deltaY;
+        // Clamp to viewport top
+        if (newY < 0) {
+          newY = 0;
+          newHeight = resizeStart.height + resizeStart.posY; // maintain bottom edge
+        }
         if (newHeight === 300) {
           newY = resizeStart.posY + (resizeStart.height - 300);
         }
@@ -105,14 +122,20 @@ export default function AboutWindow({ onClose, onMinimize, onMaximize, isMaximiz
 
   return (
     <div 
-      className={`about-window ${isMaximized ? 'maximized' : ''} ${isMinimized ? 'minimized' : ''}`}
+      className={`terminal-window ${isMaximized ? 'maximized' : ''} ${isMinimized ? 'minimized' : ''}`}
       style={!isMaximized ? { 
         left: `${position.x}px`, 
         top: `${position.y}px`,
         width: `${size.width}px`,
-        height: `${size.height}px`
-      } : {}}
-      onMouseDown={handleMouseDown}
+        height: `${size.height}px`,
+        zIndex: zIndex || 1000
+      } : {
+        zIndex: zIndex || 1000
+      }}
+      onMouseDown={(e) => {
+        handleMouseDown(e);
+        if (onFocus) onFocus();
+      }}
     >
       {/* Resize handles */}
       {!isMaximized && (
@@ -129,11 +152,11 @@ export default function AboutWindow({ onClose, onMinimize, onMaximize, isMaximiz
       )}
 
       {/* Window header */}
-      <div className="about-header">
-        <div className="about-title">
-          <span>About Me</span>
+      <div className="terminal-header">
+        <div className="terminal-title">
+          <span>Terminal</span>
         </div>
-        <div className="about-controls">
+        <div className="terminal-controls">
           <button className="control-btn minimize-btn" onClick={onMinimize}>
             <span>−</span>
           </button>
@@ -146,8 +169,8 @@ export default function AboutWindow({ onClose, onMinimize, onMaximize, isMaximiz
         </div>
       </div>
 
-      {/* About content */}
-      <div className="about-content">
+      {/* Terminal content */}
+      <div className="terminal-content">
         {/* Content will be added here */}
       </div>
     </div>

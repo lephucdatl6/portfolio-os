@@ -7,7 +7,6 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  z-index: 500;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow: hidden;
   animation: pdfWindowOpen 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;

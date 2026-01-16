@@ -7,7 +7,7 @@ import MailWindow from './windows/MailWindow'
 import PdfViewerWindow from './windows/PdfViewerWindow'
 import GitHubWindow from './windows/GitHubWindow'
 import ProjectsWindow from './windows/ProjectsWindow'
-import AboutWindow from './windows/AboutWindow'
+import TerminalWindow from './windows/TerminalWindow'
 import ContactForm from './components/ContactForm'
 
 function App() {
@@ -17,6 +17,7 @@ function App() {
   const [minimizedApps, setMinimizedApps] = useState({})
   const [maximizedApps, setMaximizedApps] = useState({})
   const [appOpenOrder, setAppOpenOrder] = useState([])
+  const [focusedApp, setFocusedApp] = useState(null)
 
   const handleOpenApp = (appName) => {
     setOpenApps(prev => ({
@@ -30,6 +31,8 @@ function App() {
       }
       return prev
     })
+    // Focus the newly opened app
+    setFocusedApp(appName)
   }
 
   const handleCloseApp = (appName) => {
@@ -45,6 +48,10 @@ function App() {
     })
     // Remove from order when closed
     setAppOpenOrder(prev => prev.filter(name => name !== appName))
+    // Clear focus if closing focused app
+    if (focusedApp === appName) {
+      setFocusedApp(null)
+    }
   }
 
   const handleMinimizeApp = (appName) => {
@@ -59,6 +66,15 @@ function App() {
       ...prev,
       [appName]: !prev[appName]
     }))
+  }
+
+  const handleFocusApp = (appName) => {
+    setFocusedApp(appName)
+  }
+
+  const getWindowZIndex = (appName) => {
+    // Base z-index is 1000, focused window gets +100
+    return focusedApp === appName ? 1100 : 1000
   }
 
   const handleShutdown = () => {
@@ -94,6 +110,7 @@ function App() {
             onMinimizeApp={handleMinimizeApp}
             appOpenOrder={appOpenOrder}
             onMaximizeApp={handleMaximizeApp}
+            onFocusApp={handleFocusApp}
             onShutdown={handleShutdown}
           />
           {openApps.mail && (
@@ -101,6 +118,8 @@ function App() {
               onClose={() => handleCloseApp('mail')}
               onMinimize={() => handleMinimizeApp('mail')}
               onMaximize={() => handleMaximizeApp('mail')}
+              onFocus={() => handleFocusApp('mail')}
+              zIndex={getWindowZIndex('mail')}
               isMaximized={maximizedApps.mail}
               isMinimized={minimizedApps.mail}
             />
@@ -110,6 +129,8 @@ function App() {
               onClose={() => handleCloseApp('resume')}
               onMinimize={() => handleMinimizeApp('resume')}
               onMaximize={() => handleMaximizeApp('resume')}
+              onFocus={() => handleFocusApp('resume')}
+              zIndex={getWindowZIndex('resume')}
               isMaximized={maximizedApps.resume}
               isMinimized={minimizedApps.resume}
             />
@@ -119,6 +140,8 @@ function App() {
               onClose={() => handleCloseApp('github')}
               onMinimize={() => handleMinimizeApp('github')}
               onMaximize={() => handleMaximizeApp('github')}
+              onFocus={() => handleFocusApp('github')}
+              zIndex={getWindowZIndex('github')}
               isMaximized={maximizedApps.github}
               isMinimized={minimizedApps.github}
             />
@@ -128,15 +151,19 @@ function App() {
               onClose={() => handleCloseApp('projects')}
               onMinimize={() => handleMinimizeApp('projects')}
               onMaximize={() => handleMaximizeApp('projects')}
+              onFocus={() => handleFocusApp('projects')}
+              zIndex={getWindowZIndex('projects')}
               isMaximized={maximizedApps.projects}
               isMinimized={minimizedApps.projects}
             />
           )}
           {openApps.about && (
-            <AboutWindow 
+            <TerminalWindow 
               onClose={() => handleCloseApp('about')}
               onMinimize={() => handleMinimizeApp('about')}
               onMaximize={() => handleMaximizeApp('about')}
+              onFocus={() => handleFocusApp('about')}
+              zIndex={getWindowZIndex('about')}
               isMaximized={maximizedApps.about}
               isMinimized={minimizedApps.about}
             />

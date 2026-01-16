@@ -7,7 +7,6 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  z-index: 500;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow: hidden;
   animation: mailWindowOpen 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
@@ -153,13 +152,13 @@
 }
 
 .mail-control-btn {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   background: transparent;
   border: none;
   color: white;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;

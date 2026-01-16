@@ -6,27 +6,27 @@ const GRID_SIZE = 100;
 const INITIAL_ICONS = [
   {
     id: 1,
-    name: 'Resume',
-    image: '/assets/icons/pdf.jpg',
-    x: 20,
-    y: 20,
-    appKey: 'resume', // Opens PDF file
-  },
-  {
-    id: 2,
-    name: 'About Me',
-    image: '/assets/icons/vs code.svg',
-    x: 20,
-    y: 120,
-    appKey: 'about',
-  },
-  {
-    id: 3,
     name: 'Projects',
     image: '/assets/icons/folder.png',
     x: 20,
-    y: 220,
+    y: 20,
     appKey: 'projects',
+  },
+  {
+    id: 2,
+    name: 'Resume',
+    image: '/assets/icons/pdf.jpg',
+    x: 20,
+    y: 120,
+    appKey: 'resume', // Opens PDF file
+  },
+  {
+    id: 3,
+    name: 'My GitHub',
+    image: '/assets/icons/github.svg',
+    x: 20,
+    y: 220,
+    appKey: 'github',
   },
   {
     id: 4,
@@ -38,11 +38,11 @@ const INITIAL_ICONS = [
   },
   {
     id: 5,
-    name: 'My GitHub',
-    image: '/assets/icons/github.svg',
+    name: 'Terminal',
+    image: '/assets/icons/terminal.png',
     x: 20,
     y: 420,
-    appKey: 'github',
+    appKey: 'about',
   },
 ];
 

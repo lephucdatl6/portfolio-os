@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import './GitHubWindow.css';
 
-export default function GitHubWindow({ onClose, onMinimize, onMaximize, isMaximized, isMinimized }) {
+export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus, zIndex, isMaximized, isMinimized }) {
+  const TASKBAR_HEIGHT = 60;
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [size, setSize] = useState({ width: 900, height: 700 });
   const [isDragging, setIsDragging] = useState(false);
@@ -123,10 +124,12 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, isMaximi
 
   const handleMouseMove = (e) => {
     if (isDragging) {
-      setPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y,
-      });
+      const newX = e.clientX - dragOffset.x;
+      const newY = e.clientY - dragOffset.y;
+      const clampedX = Math.min(Math.max(newX, 0), Math.max(0, window.innerWidth - size.width));
+      const maxY = Math.max(0, window.innerHeight - TASKBAR_HEIGHT - size.height);
+      const clampedY = Math.min(Math.max(newY, 0), maxY);
+      setPosition({ x: clampedX, y: clampedY });
     }
 
     if (isResizing && resizeType) {
@@ -140,20 +143,31 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, isMaximi
 
       if (resizeType.includes('right')) {
         newWidth = Math.max(400, resizeStart.width + deltaX);
+        newWidth = Math.min(newWidth, window.innerWidth - resizeStart.posX);
       }
       if (resizeType.includes('left')) {
         newWidth = Math.max(400, resizeStart.width - deltaX);
         newX = resizeStart.posX + deltaX;
+        if (newX < 0) {
+          newX = 0;
+          newWidth = resizeStart.width + resizeStart.posX;
+        }
         if (newWidth === 400) {
           newX = resizeStart.posX + (resizeStart.width - 400);
         }
       }
       if (resizeType.includes('bottom')) {
         newHeight = Math.max(300, resizeStart.height + deltaY);
+        const maxHeight = window.innerHeight - TASKBAR_HEIGHT - resizeStart.posY;
+        newHeight = Math.min(newHeight, maxHeight);
       }
       if (resizeType.includes('top')) {
         newHeight = Math.max(300, resizeStart.height - deltaY);
         newY = resizeStart.posY + deltaY;
+        if (newY < 0) {
+          newY = 0;
+          newHeight = resizeStart.height + resizeStart.posY;
+        }
         if (newHeight === 300) {
           newY = resizeStart.posY + (resizeStart.height - 300);
         }
@@ -205,9 +219,15 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, isMaximi
         left: `${position.x}px`, 
         top: `${position.y}px`,
         width: `${size.width}px`,
-        height: `${size.height}px`
-      } : {}}
-      onMouseDown={handleMouseDown}
+        height: `${size.height}px`,
+        zIndex: zIndex || 1000
+      } : {
+        zIndex: zIndex || 1000
+      }}
+      onMouseDown={(e) => {
+        handleMouseDown(e);
+        if (onFocus) onFocus();
+      }}
     >
       {/* Resize handles */}
       {!isMaximized && (
@@ -326,7 +346,6 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, isMaximi
                     <span className="lang-dot javascript"></span>
                     JavaScript
                   </span>
-                  <span className="stars">⭐ {repoInfo?.stargazers_count || 1}</span>
                   <span className="updated">
                     {loadingRepo ? 'Loading...' : `Updated ${formatCommitDate(repoInfo?.updated_at || new Date().toISOString())}`}
                   </span>

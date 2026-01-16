@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './Taskbar.css';
 import StartMenu from './StartMenu';
 
-export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimizedApps = {}, onMinimizeApp, appOpenOrder = [], onShutdown }) {
+export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimizedApps = {}, onMinimizeApp, onFocusApp, appOpenOrder = [], onShutdown }) {
   const [time, setTime] = useState(new Date());
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -123,9 +123,9 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
         title: minimizedApps.projects ? 'Restore Projects' : 'Minimize Projects'
       },
       about: {
-        icon: '/assets/icons/vs code.svg',
-        alt: 'About Me',
-        title: minimizedApps.about ? 'Restore About Me' : 'Minimize About Me'
+        icon: '/assets/icons/terminal.png',
+        alt: 'Terminal',
+        title: minimizedApps.about ? 'Restore Terminal' : 'Minimize Terminal'
       }
     };
 
@@ -136,7 +136,13 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
       <button 
         key={appName}
         className={`app-icon ${minimizedApps[appName] ? 'minimized' : 'open'}`}
-        onClick={() => onMinimizeApp(appName)} 
+        onClick={() => {
+          onMinimizeApp(appName);
+          // Focus the window when it's being restored from minimized state
+          if (minimizedApps[appName] && onFocusApp) {
+            onFocusApp(appName);
+          }
+        }} 
         title={config.title}
       >
         <img src={config.icon} alt={config.alt} />
