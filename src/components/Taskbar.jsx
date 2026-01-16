@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import './Taskbar.css';
 import StartMenu from './StartMenu';
 
-export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimizedApps = {}, onMinimizeApp, appOpenOrder = [] }) {
+export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimizedApps = {}, onMinimizeApp, appOpenOrder = [], onShutdown }) {
   const [time, setTime] = useState(new Date());
   const [startMenuOpen, setStartMenuOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [calendarClosing, setCalendarClosing] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -30,6 +32,72 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
     });
   };
 
+  const formatCalendarDate = (date) => {
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const formatCalendarHeader = (date) => {
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric',
+    });
+  };
+
+  const generateCalendarDays = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const today = new Date();
+    
+    // First day of the month
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
+    
+    const days = [];
+    const currentDate = new Date(startDate);
+    
+    // Generate 6 weeks of days
+    for (let i = 0; i < 42; i++) {
+      const isCurrentMonth = currentDate.getMonth() === month;
+      const isToday = currentDate.toDateString() === today.toDateString();
+      
+      days.push({
+        date: currentDate.getDate(),
+        fullDate: new Date(currentDate),
+        isCurrentMonth,
+        isToday
+      });
+      
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return days;
+  };
+
+  const handleCalendarClose = () => {
+    if (calendarClosing) return;
+    setCalendarClosing(true);
+    setTimeout(() => {
+      setCalendarOpen(false);
+      setCalendarClosing(false);
+    }, 200);
+  };
+
+  const handleCalendarToggle = () => {
+    if (calendarClosing) return;
+    if (calendarOpen) {
+      handleCalendarClose();
+    } else {
+      setCalendarOpen(true);
+    }
+  };
+
   const renderAppIcon = (appName) => {
     if (!openApps[appName]) return null;
 
@@ -43,6 +111,21 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
         icon: '/assets/icons/mail.png', 
         alt: 'Mail',
         title: minimizedApps.mail ? 'Restore Mail' : 'Minimize Mail'
+      },
+      github: {
+        icon: '/assets/icons/github.svg',
+        alt: 'My GitHub',
+        title: minimizedApps.github ? 'Restore My GitHub' : 'Minimize My GitHub'
+      },
+      projects: {
+        icon: '/assets/icons/file explorer.png',
+        alt: 'Projects',
+        title: minimizedApps.projects ? 'Restore Projects' : 'Minimize Projects'
+      },
+      about: {
+        icon: '/assets/icons/vs code.svg',
+        alt: 'About Me',
+        title: minimizedApps.about ? 'Restore About Me' : 'Minimize About Me'
       }
     };
 
@@ -63,7 +146,47 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
 
   return (
     <>
-      <StartMenu isOpen={startMenuOpen} onClose={() => setStartMenuOpen(false)} onOpenApp={onOpenApp} />
+      <StartMenu isOpen={startMenuOpen} onClose={() => setStartMenuOpen(false)} onOpenApp={onOpenApp} onShutdown={onShutdown} />
+      
+      {/* Calendar Popup */}
+      {(calendarOpen || calendarClosing) && (
+        <>
+          <div className="calendar-overlay" onClick={handleCalendarClose}></div>
+          <div className={`calendar-popup ${calendarClosing ? 'closing' : ''}`}>
+            <div className="calendar-header">
+              <div className="calendar-date-display">
+                <div className="calendar-full-date">{formatCalendarDate(time)}</div>
+              </div>
+            </div>
+            <div className="calendar-month-header">
+              {formatCalendarHeader(time)}
+            </div>
+            
+            {/* Calendar Grid */}
+            <div className="calendar-grid">
+              {/* Day headers */}
+              <div className="calendar-day-headers">
+                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
+                  <div key={day} className="calendar-day-header">{day}</div>
+                ))}
+              </div>
+              
+              {/* Calendar days */}
+              <div className="calendar-days">
+                {generateCalendarDays(time).map((day, index) => (
+                  <div
+                    key={index}
+                    className={`calendar-day ${day.isCurrentMonth ? 'current-month' : 'other-month'} ${day.isToday ? 'today' : ''}`}
+                  >
+                    {day.date}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       <div className="taskbar">
         {/* Start Button - Far Left */}
         <button 
@@ -84,12 +207,12 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
 
         {/* System Tray */}
         <div className="system-tray">
-          <div className="clock">
+          <div className="clock" onClick={handleCalendarToggle}>
             <div className="time">{formatTime(time)}</div>
-          <div className="date">{formatDate(time)}</div>
+            <div className="date">{formatDate(time)}</div>
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }

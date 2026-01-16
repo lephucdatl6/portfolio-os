@@ -14,10 +14,11 @@ const INITIAL_ICONS = [
   },
   {
     id: 2,
-    name: 'VS Code',
+    name: 'About Me',
     image: '/assets/icons/vs code.svg',
     x: 20,
     y: 120,
+    appKey: 'about',
   },
   {
     id: 3,
@@ -25,6 +26,7 @@ const INITIAL_ICONS = [
     image: '/assets/icons/folder.png',
     x: 20,
     y: 220,
+    appKey: 'projects',
   },
   {
     id: 4,
@@ -33,6 +35,14 @@ const INITIAL_ICONS = [
     x: 20,
     y: 320,
     appKey: 'mail',
+  },
+  {
+    id: 5,
+    name: 'My GitHub',
+    image: '/assets/icons/github.svg',
+    x: 20,
+    y: 420,
+    appKey: 'github',
   },
 ];
 

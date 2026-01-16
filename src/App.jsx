@@ -1,13 +1,18 @@
 import { useState } from 'react'
 import './App.css'
 import LoginScreen from './components/LoginScreen'
+import ShutdownScreen from './components/ShutdownScreen'
 import DesktopLayout from './layouts/DesktopLayout'
 import MailWindow from './windows/MailWindow'
 import PdfViewerWindow from './windows/PdfViewerWindow'
+import GitHubWindow from './windows/GitHubWindow'
+import ProjectsWindow from './windows/ProjectsWindow'
+import AboutWindow from './windows/AboutWindow'
 import ContactForm from './components/ContactForm'
 
 function App() {
   const [showDesktop, setShowDesktop] = useState(false)
+  const [showShutdown, setShowShutdown] = useState(false)
   const [openApps, setOpenApps] = useState({})
   const [minimizedApps, setMinimizedApps] = useState({})
   const [maximizedApps, setMaximizedApps] = useState({})
@@ -56,9 +61,27 @@ function App() {
     }))
   }
 
+  const handleShutdown = () => {
+    // Show shutdown screen first
+    setShowShutdown(true)
+    setShowDesktop(false)
+  }
+
+  const handleShutdownComplete = () => {
+    // Reset all states and go back to login screen
+    setOpenApps({})
+    setMinimizedApps({})
+    setMaximizedApps({})
+    setAppOpenOrder([])
+    setShowShutdown(false)
+    setShowDesktop(false)
+  }
+
   return (
     <>
-      {!showDesktop ? (
+      {showShutdown ? (
+        <ShutdownScreen onShutdownComplete={handleShutdownComplete} />
+      ) : !showDesktop ? (
         <LoginScreen onLoginComplete={() => setShowDesktop(true)} />
       ) : (
         <>
@@ -71,6 +94,7 @@ function App() {
             onMinimizeApp={handleMinimizeApp}
             appOpenOrder={appOpenOrder}
             onMaximizeApp={handleMaximizeApp}
+            onShutdown={handleShutdown}
           />
           {openApps.mail && (
             <MailWindow 
@@ -88,6 +112,33 @@ function App() {
               onMaximize={() => handleMaximizeApp('resume')}
               isMaximized={maximizedApps.resume}
               isMinimized={minimizedApps.resume}
+            />
+          )}
+          {openApps.github && (
+            <GitHubWindow 
+              onClose={() => handleCloseApp('github')}
+              onMinimize={() => handleMinimizeApp('github')}
+              onMaximize={() => handleMaximizeApp('github')}
+              isMaximized={maximizedApps.github}
+              isMinimized={minimizedApps.github}
+            />
+          )}
+          {openApps.projects && (
+            <ProjectsWindow 
+              onClose={() => handleCloseApp('projects')}
+              onMinimize={() => handleMinimizeApp('projects')}
+              onMaximize={() => handleMaximizeApp('projects')}
+              isMaximized={maximizedApps.projects}
+              isMinimized={minimizedApps.projects}
+            />
+          )}
+          {openApps.about && (
+            <AboutWindow 
+              onClose={() => handleCloseApp('about')}
+              onMinimize={() => handleMinimizeApp('about')}
+              onMaximize={() => handleMaximizeApp('about')}
+              isMaximized={maximizedApps.about}
+              isMinimized={minimizedApps.about}
             />
           )}
           {openApps.contact && (

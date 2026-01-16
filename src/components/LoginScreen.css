@@ -72,9 +72,9 @@
 
 .user-name {
   font-size: 2rem !important;
-  font-weight: 400;
+  font-weight: 400 !important;
   color: white;
-  margin: 5px 0 10px 0;
+  margin: 5px 0 10px 0 !important;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   letter-spacing: 1px;
 }

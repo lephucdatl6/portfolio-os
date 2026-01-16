@@ -2,7 +2,7 @@ import DesktopIcons from '../components/DesktopIcons';
 import Taskbar from '../components/Taskbar';
 import './DesktopLayout.css';
 
-export default function DesktopLayout({ onOpenApp, openApps, onCloseApp, minimizedApps, maximizedApps, onMinimizeApp, onMaximizeApp, appOpenOrder }) {
+export default function DesktopLayout({ onOpenApp, openApps, onCloseApp, minimizedApps, maximizedApps, onMinimizeApp, onMaximizeApp, appOpenOrder, onShutdown }) {
   return (
     <div className="desktop-layout">
       <DesktopIcons 
@@ -18,6 +18,7 @@ export default function DesktopLayout({ onOpenApp, openApps, onCloseApp, minimiz
         minimizedApps={minimizedApps}
         onMinimizeApp={onMinimizeApp}
         appOpenOrder={appOpenOrder}
+        onShutdown={onShutdown}
       />
     </div>
   );

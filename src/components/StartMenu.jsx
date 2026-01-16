@@ -1,18 +1,26 @@
 import { useState } from 'react';
 import './StartMenu.css';
 
-export default function StartMenu({ isOpen, onClose, onOpenApp }) {
+export default function StartMenu({ isOpen, onClose, onOpenApp, onShutdown }) {
   const apps = [
     { id: 1, name: 'Resume', icon: '/assets/icons/pdf.jpg', action: 'resume' },
-    { id: 2, name: 'VS Code', icon: '/assets/icons/vs code.svg' },
-    { id: 3, name: 'Projects', icon: '/assets/icons/folder.png' },
+    { id: 2, name: 'About Me', icon: '/assets/icons/vs code.svg', action: 'about' },
+    { id: 3, name: 'Projects', icon: '/assets/icons/folder.png', action: 'projects' },
     { id: 4, name: 'Contact Me', icon: '/assets/icons/mail.png', action: 'mail' },
+    { id: 5, name: 'My GitHub', icon: '/assets/icons/github.svg', action: 'github' },
   ];
 
   const handleAppClick = (app) => {
     if (app.action && onOpenApp) {
       onOpenApp(app.action);
       onClose();
+    }
+  };
+
+  const handleShutdown = () => {
+    onClose(); // Close the start menu first
+    if (onShutdown) {
+      onShutdown(); // Call the shutdown function passed from parent
     }
   };
 
@@ -41,7 +49,7 @@ export default function StartMenu({ isOpen, onClose, onOpenApp }) {
             <img src="/assets/avatar.jpg" alt="User" className="footer-avatar" />
             <span className="user-name">Dave</span>
           </div>
-          <button className="footer-button power-button" title="Power">
+          <button className="footer-button power-button" title="Shutdown" onClick={handleShutdown}>
             ⏻
           </button>
         </div>
