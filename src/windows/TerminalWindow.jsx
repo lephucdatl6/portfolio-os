@@ -30,9 +30,16 @@ export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocu
     if (isDragging) {
       const newX = e.clientX - dragOffset.x;
       const newY = e.clientY - dragOffset.y;
-      const clampedX = Math.min(Math.max(newX, 0), Math.max(0, window.innerWidth - size.width));
-      const maxY = Math.max(0, window.innerHeight - TASKBAR_HEIGHT - size.height);
-      const clampedY = Math.min(Math.max(newY, 0), maxY);
+      const MIN_VISIBLE = 100;
+      const HEADER_GRAB_HEIGHT = 60;
+      const clampedX = Math.min(
+        Math.max(newX, -size.width + MIN_VISIBLE),
+        window.innerWidth - MIN_VISIBLE
+      );
+      const clampedY = Math.min(
+        Math.max(newY, -HEADER_GRAB_HEIGHT),
+        window.innerHeight - MIN_VISIBLE
+      );
       setPosition({ x: clampedX, y: clampedY });
     }
 
@@ -65,7 +72,7 @@ export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocu
       if (resizeType.includes('bottom')) {
         newHeight = Math.max(300, resizeStart.height + deltaY);
         // Prevent growing past taskbar
-        const maxHeight = window.innerHeight - TASKBAR_HEIGHT - resizeStart.posY;
+        const maxHeight = window.innerHeight - resizeStart.posY;
         newHeight = Math.min(newHeight, maxHeight);
       }
       if (resizeType.includes('top')) {

@@ -3,10 +3,11 @@ import './App.css'
 import LoginScreen from './components/LoginScreen'
 import ShutdownScreen from './components/ShutdownScreen'
 import DesktopLayout from './layouts/DesktopLayout'
+import Taskbar from './components/Taskbar'
 import MailWindow from './windows/MailWindow'
 import PdfViewerWindow from './windows/PdfViewerWindow'
 import GitHubWindow from './windows/GitHubWindow'
-import ProjectsWindow from './windows/ProjectsWindow'
+import FolderWindow from './windows/FolderWindow'
 import TerminalWindow from './windows/TerminalWindow'
 import ContactForm from './components/ContactForm'
 
@@ -104,14 +105,8 @@ function App() {
           <DesktopLayout 
             onOpenApp={handleOpenApp}
             openApps={openApps}
-            onCloseApp={handleCloseApp}
             minimizedApps={minimizedApps}
-            maximizedApps={maximizedApps}
             onMinimizeApp={handleMinimizeApp}
-            appOpenOrder={appOpenOrder}
-            onMaximizeApp={handleMaximizeApp}
-            onFocusApp={handleFocusApp}
-            onShutdown={handleShutdown}
           />
           {openApps.mail && (
             <MailWindow 
@@ -147,7 +142,7 @@ function App() {
             />
           )}
           {openApps.projects && (
-            <ProjectsWindow 
+            <FolderWindow 
               onClose={() => handleCloseApp('projects')}
               onMinimize={() => handleMinimizeApp('projects')}
               onMaximize={() => handleMaximizeApp('projects')}
@@ -173,6 +168,18 @@ function App() {
               <ContactForm />
             </div>
           )}
+
+          {/* Render Taskbar last to guarantee topmost visual stacking */}
+          <Taskbar 
+            openApps={openApps}
+            onOpenApp={handleOpenApp}
+            onCloseApp={handleCloseApp}
+            minimizedApps={minimizedApps}
+            onMinimizeApp={handleMinimizeApp}
+            onFocusApp={handleFocusApp}
+            appOpenOrder={appOpenOrder}
+            onShutdown={handleShutdown}
+          />
         </>
       )}
     </>

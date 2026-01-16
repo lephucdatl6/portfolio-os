@@ -6,7 +6,7 @@ const GRID_SIZE = 100;
 const INITIAL_ICONS = [
   {
     id: 1,
-    name: 'Projects',
+    name: 'Folder',
     image: '/assets/icons/folder.png',
     x: 20,
     y: 20,

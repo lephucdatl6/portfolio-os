@@ -64,7 +64,6 @@
   }
 }
 
-/* Resize handles */
 .resize-handle {
   position: absolute;
   background: transparent;
@@ -141,7 +140,7 @@
 
 .mail-title {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: white;
 }
 
@@ -162,9 +161,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 2px;
+  border-radius: 4px;
   transition: background-color 0.2s;
-  font-weight: 300;
   outline: none;
 }
 

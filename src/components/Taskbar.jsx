@@ -105,27 +105,27 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
       resume: {
         icon: '/assets/icons/pdf.jpg',
         alt: 'PDF Viewer',
-        title: minimizedApps.resume ? 'Restore PDF Viewer' : 'Minimize PDF Viewer'
+        title: minimizedApps.resume ? 'PDF' : 'Minimize PDF Viewer'
       },
       mail: {
         icon: '/assets/icons/mail.png', 
         alt: 'Mail',
-        title: minimizedApps.mail ? 'Restore Mail' : 'Minimize Mail'
+        title: minimizedApps.mail ? 'Mail' : 'Minimize Mail'
       },
       github: {
         icon: '/assets/icons/github.svg',
         alt: 'My GitHub',
-        title: minimizedApps.github ? 'Restore My GitHub' : 'Minimize My GitHub'
+        title: minimizedApps.github ? 'GitHub' : 'Minimize My GitHub'
       },
       projects: {
         icon: '/assets/icons/file explorer.png',
-        alt: 'Projects',
-        title: minimizedApps.projects ? 'Restore Projects' : 'Minimize Projects'
+        alt: 'Folder',
+        title: minimizedApps.projects ? 'Folder' : 'Minimize Folder'
       },
       about: {
         icon: '/assets/icons/terminal.png',
         alt: 'Terminal',
-        title: minimizedApps.about ? 'Restore Terminal' : 'Minimize Terminal'
+        title: minimizedApps.about ? 'Terminal' : 'Minimize Terminal'
       }
     };
 
@@ -138,11 +138,10 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
         className={`app-icon ${minimizedApps[appName] ? 'minimized' : 'open'}`}
         onClick={() => {
           onMinimizeApp(appName);
-          // Focus the window when it's being restored from minimized state
           if (minimizedApps[appName] && onFocusApp) {
             onFocusApp(appName);
           }
-        }} 
+        }}
         title={config.title}
       >
         <img src={config.icon} alt={config.alt} />
@@ -219,6 +218,7 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
           </div>
         </div>
       </div>
+
     </>
   );
 }

@@ -35,7 +35,6 @@
   padding: 12px 16px;
   background: linear-gradient(to right, #e8e8e8, #e8e8e8);
   color: #333333;
-  border-bottom: 1px solid lightslategray;
   cursor: move;
   flex-shrink: 0;
   user-select: none;
@@ -50,12 +49,23 @@
   color: #000000;
 }
 
+.projects-title img,
+.projects-title .icon {
+  filter: brightness(0) saturate(100%);
+}
+
+.projects-title svg,
+.projects-title svg path {
+  fill: #000000;
+  color: #000000;
+}
+
 .projects-controls {
   display: flex;
   gap: 4px;
 }
 
-.control-btn {
+.projects-window .control-btn {
   width: 36px;
   height: 32px;
   border: none;
@@ -71,15 +81,15 @@
   outline: none;
 }
 
-.control-btn:focus {
+.projects-window .control-btn:focus {
   outline: none;
 }
 
-.control-btn:hover {
+.projects-window .control-btn:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.close-btn:hover {
+.projects-window .close-btn:hover {
   background-color: #da3633;
   color: black;
 }

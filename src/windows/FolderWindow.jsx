@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import './ProjectsWindow.css';
+import './FolderWindow.css';
 
-export default function ProjectsWindow({ onClose, onMinimize, onMaximize, onFocus, zIndex, isMaximized, isMinimized }) {
+export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus, zIndex, isMaximized, isMinimized }) {
   const TASKBAR_HEIGHT = 60;
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [size, setSize] = useState({ width: 900, height: 700 });
@@ -11,7 +11,6 @@ export default function ProjectsWindow({ onClose, onMinimize, onMaximize, onFocu
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0, posX: 0, posY: 0 });
 
-  // Initialize position to center on mount
   useEffect(() => {
     const centerX = window.innerWidth / 2 - 450;
     const centerY = window.innerHeight / 2 - 350; 
@@ -31,9 +30,16 @@ export default function ProjectsWindow({ onClose, onMinimize, onMaximize, onFocu
     if (isDragging) {
       const newX = e.clientX - dragOffset.x;
       const newY = e.clientY - dragOffset.y;
-      const clampedX = Math.min(Math.max(newX, 0), Math.max(0, window.innerWidth - size.width));
-      const maxY = Math.max(0, window.innerHeight - TASKBAR_HEIGHT - size.height);
-      const clampedY = Math.min(Math.max(newY, 0), maxY);
+      const MIN_VISIBLE = 200;
+      const HEADER_GRAB_HEIGHT = 60;
+      const clampedX = Math.min(
+        Math.max(newX, -size.width + MIN_VISIBLE),
+        window.innerWidth - MIN_VISIBLE
+      );
+      const clampedY = Math.min(
+        Math.max(newY, -HEADER_GRAB_HEIGHT),
+        window.innerHeight - MIN_VISIBLE
+      );
       setPosition({ x: clampedX, y: clampedY });
     }
 
@@ -63,7 +69,7 @@ export default function ProjectsWindow({ onClose, onMinimize, onMaximize, onFocu
       }
       if (resizeType.includes('bottom')) {
         newHeight = Math.max(300, resizeStart.height + deltaY);
-        const maxHeight = window.innerHeight - TASKBAR_HEIGHT - resizeStart.posY;
+        const maxHeight = window.innerHeight - resizeStart.posY;
         newHeight = Math.min(newHeight, maxHeight);
       }
       if (resizeType.includes('top')) {
@@ -151,7 +157,7 @@ export default function ProjectsWindow({ onClose, onMinimize, onMaximize, onFocu
       {/* Window header */}
       <div className="projects-header">
         <div className="projects-title">
-          <span>Projects</span>
+          <span>Folder</span>
         </div>
         <div className="projects-controls">
           <button className="control-btn minimize-btn" onClick={onMinimize}>
@@ -168,7 +174,7 @@ export default function ProjectsWindow({ onClose, onMinimize, onMaximize, onFocu
 
       {/* Projects content */}
       <div className="projects-content">
-        {/* Projects will be added here */}
+        {/* Content will be added here */}
       </div>
     </div>
   );
