@@ -184,7 +184,7 @@ export default function PdfViewer({ onClose, onMinimize, onMaximize, onFocus, zI
 
       <div className="pdf-content">
         <iframe
-          src="/assets/resume.pdf#toolbar=1&navpanes=0&scrollbar=1&view=FitH"
+          src={`${import.meta.env.VITE_RESUME_URL || '/assets/resume.pdf'}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
           width="100%"
           height="100%"
           title="Resume PDF"
