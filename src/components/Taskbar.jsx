@@ -105,27 +105,32 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
       resume: {
         icon: '/assets/icons/pdf.jpg',
         alt: 'PDF Viewer',
-        title: minimizedApps.resume ? 'PDF' : 'Minimize PDF Viewer'
+        title: minimizedApps.resume ? 'PDF' : 'PDF'
       },
       mail: {
         icon: '/assets/icons/mail.png', 
         alt: 'Mail',
-        title: minimizedApps.mail ? 'Mail' : 'Minimize Mail'
+        title: minimizedApps.mail ? 'Mail' : 'Contact Me'
       },
       github: {
         icon: '/assets/icons/github.svg',
-        alt: 'My GitHub',
-        title: minimizedApps.github ? 'GitHub' : 'Minimize My GitHub'
+        alt: 'GitHub',
+        title: minimizedApps.github ? 'GitHub' : 'GitHub'
       },
       projects: {
         icon: '/assets/icons/file explorer.png',
         alt: 'Folder',
-        title: minimizedApps.projects ? 'Folder' : 'Minimize Folder'
+        title: minimizedApps.projects ? 'Folder' : 'Projects'
+      },
+      profile: {
+        icon: '/assets/icons/profile.png',
+        alt: 'Profile',
+        title: minimizedApps.profile ? 'Profile' : 'Profile'
       },
       about: {
         icon: '/assets/icons/terminal.png',
         alt: 'Terminal',
-        title: minimizedApps.about ? 'Terminal' : 'Minimize Terminal'
+        title: minimizedApps.about ? 'Terminal' : 'Terminal'
       }
     };
 

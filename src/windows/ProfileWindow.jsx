@@ -1,31 +1,28 @@
 import { useState, useEffect } from 'react';
-import './FolderWindow.css';
+import './ProfileWindow.css';
 
-export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus, zIndex, isMaximized, isMinimized }) {
-  const TASKBAR_HEIGHT = 60;
+export default function ProfileWindow({ onClose, onMinimize, onMaximize, onFocus, zIndex, isMaximized, isMinimized }) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [size, setSize] = useState({ width: 900, height: 700 });
+  const [size, setSize] = useState({ width: 900, height: 650 });
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeType, setResizeType] = useState('');
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0, posX: 0, posY: 0 });
-  const basePath = ['This PC', 'Projects'];
+
+  const basePath = ['Profile'];
   const [path, setPath] = useState(basePath);
 
   useEffect(() => {
-    const centerX = window.innerWidth / 2 - 450;
-    const centerY = window.innerHeight / 2 - 350; 
+    const centerX = window.innerWidth / 2 - size.width / 2;
+    const centerY = window.innerHeight / 2 - size.height / 2;
     setPosition({ x: centerX, y: centerY });
   }, []);
 
   const handleMouseDown = (e) => {
-    if (e.target.closest('.projects-controls') || e.target.closest('.resize-handle')) return;
+    if (e.target.closest('.profile-controls') || e.target.closest('.resize-handle')) return;
     setIsDragging(true);
-    setDragOffset({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    });
+    setDragOffset({ x: e.clientX - position.x, y: e.clientY - position.y });
   };
 
   const handleMouseMove = (e) => {
@@ -34,21 +31,15 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
       const newY = e.clientY - dragOffset.y;
       const MIN_VISIBLE = 200;
       const HEADER_GRAB_HEIGHT = 60;
-      const clampedX = Math.min(
-        Math.max(newX, -size.width + MIN_VISIBLE),
-        window.innerWidth - MIN_VISIBLE
-      );
-      const clampedY = Math.min(
-        Math.max(newY, -HEADER_GRAB_HEIGHT),
-        window.innerHeight - MIN_VISIBLE
-      );
+      const clampedX = Math.min(Math.max(newX, -size.width + MIN_VISIBLE), window.innerWidth - MIN_VISIBLE);
+      const clampedY = Math.min(Math.max(newY, -HEADER_GRAB_HEIGHT), window.innerHeight - MIN_VISIBLE);
       setPosition({ x: clampedX, y: clampedY });
     }
 
     if (isResizing && resizeType) {
       const deltaX = e.clientX - resizeStart.x;
       const deltaY = e.clientY - resizeStart.y;
-      
+
       let newWidth = resizeStart.width;
       let newHeight = resizeStart.height;
       let newX = resizeStart.posX;
@@ -61,13 +52,8 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
       if (resizeType.includes('left')) {
         newWidth = Math.max(400, resizeStart.width - deltaX);
         newX = resizeStart.posX + deltaX;
-        if (newX < 0) {
-          newX = 0;
-          newWidth = resizeStart.width + resizeStart.posX;
-        }
-        if (newWidth === 400) {
-          newX = resizeStart.posX + (resizeStart.width - 400);
-        }
+        if (newX < 0) { newX = 0; newWidth = resizeStart.width + resizeStart.posX; }
+        if (newWidth === 400) { newX = resizeStart.posX + (resizeStart.width - 400); }
       }
       if (resizeType.includes('bottom')) {
         newHeight = Math.max(300, resizeStart.height + deltaY);
@@ -77,13 +63,8 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
       if (resizeType.includes('top')) {
         newHeight = Math.max(300, resizeStart.height - deltaY);
         newY = resizeStart.posY + deltaY;
-        if (newY < 0) {
-          newY = 0;
-          newHeight = resizeStart.height + resizeStart.posY;
-        }
-        if (newHeight === 300) {
-          newY = resizeStart.posY + (resizeStart.height - 300);
-        }
+        if (newY < 0) { newY = 0; newHeight = resizeStart.height + resizeStart.posY; }
+        if (newHeight === 300) { newY = resizeStart.posY + (resizeStart.height - 300); }
       }
 
       setSize({ width: newWidth, height: newHeight });
@@ -91,47 +72,12 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
     }
   };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    setIsResizing(false);
-    setResizeType('');
-  };
-
-  const openFolder = (name) => {
-    setPath((prev) => [...basePath, name]);
-  };
-
-  const goUp = () => {
-    setPath((prev) => (prev.length > basePath.length ? prev.slice(0, prev.length - 1) : prev));
-  };
-
-  const goToIndex = (index) => {
-    setPath((prev) => (index < basePath.length - 1 ? prev : prev.slice(0, index + 1)));
-  };
-
-  const navigateTo = (target) => {
-    if (target === 'This PC') {
-      setPath(basePath);
-    } else if (target === 'Windows (C:)') {
-      setPath(['This PC', 'Windows (C:)']);
-    } else {
-      setPath(['This PC', target]);
-    }
-  };
+  const handleMouseUp = () => { setIsDragging(false); setIsResizing(false); setResizeType(''); };
 
   const handleResizeStart = (e, type) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsResizing(true);
-    setResizeType(type);
-    setResizeStart({
-      x: e.clientX,
-      y: e.clientY,
-      width: size.width,
-      height: size.height,
-      posX: position.x,
-      posY: position.y,
-    });
+    e.preventDefault(); e.stopPropagation();
+    setIsResizing(true); setResizeType(type);
+    setResizeStart({ x: e.clientX, y: e.clientY, width: size.width, height: size.height, posX: position.x, posY: position.y });
   };
 
   useEffect(() => {
@@ -147,24 +93,15 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
 
   if (isMinimized) return null;
 
+  const goUp = () => { setPath((prev) => (prev.length > basePath.length ? prev.slice(0, prev.length - 1) : prev)); };
+  const goToIndex = (index) => { setPath((prev) => (index < basePath.length - 1 ? prev : prev.slice(0, index + 1))); };
+
   return (
-    <div 
-      className={`projects-window ${isMaximized ? 'maximized' : ''} ${isMinimized ? 'minimized' : ''}`}
-      style={!isMaximized ? { 
-        left: `${position.x}px`, 
-        top: `${position.y}px`,
-        width: `${size.width}px`,
-        height: `${size.height}px`,
-        zIndex: zIndex || 1000
-      } : {
-        zIndex: zIndex || 1000
-      }}
-      onMouseDown={(e) => {
-        handleMouseDown(e);
-        if (onFocus) onFocus();
-      }}
+    <div
+      className={`profile-window ${isMaximized ? 'maximized' : ''} ${isMinimized ? 'minimized' : ''}`}
+      style={!isMaximized ? { left: `${position.x}px`, top: `${position.y}px`, width: `${size.width}px`, height: `${size.height}px`, zIndex: zIndex || 1000 } : { zIndex: zIndex || 1000 }}
+      onMouseDown={(e) => { handleMouseDown(e); if (onFocus) onFocus(); }}
     >
-      {/* Resize handles */}
       {!isMaximized && (
         <>
           <div className="resize-handle resize-top" onMouseDown={(e) => handleResizeStart(e, 'top')} />
@@ -178,46 +115,19 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
         </>
       )}
 
-      {/* Window header */}
-      <div className="projects-header">
-        <div className="projects-title">
-          <span>Projects</span>
-        </div>
-        <div className="projects-controls">
-          <button className="control-btn minimize-btn" onClick={onMinimize}>
-            <span>−</span>
-          </button>
-          <button className="control-btn maximize-btn" onClick={onMaximize}>
-            <span>{isMaximized ? '❐' : '□'}</span>
-          </button>
-          <button className="control-btn close-btn" onClick={onClose}>
-            <span>×</span>
-          </button>
+      <div className="profile-header">
+        <div className="profile-title"><span>Profile</span></div>
+        <div className="profile-controls">
+          <button className="control-btn minimize-btn" onClick={onMinimize}><span>−</span></button>
+          <button className="control-btn maximize-btn" onClick={onMaximize}><span>{isMaximized ? '❐' : '□'}</span></button>
+          <button className="control-btn close-btn" onClick={onClose}><span>×</span></button>
         </div>
       </div>
 
-      {/* Explorer content */}
-      <div className="projects-content explorer-container">
+      <div className="profile-content explorer-container">
         <div className="explorer-toolbar">
-          {/* <div className="nav-buttons">
-            <button
-              className="nav-btn"
-              onClick={goUp}
-              disabled={path.length === basePath.length}
-              title="Back"
-              aria-label="Back"
-            >
-              ←
-            </button>
-          </div> */}
           <div className="nav-buttons">
-            <button
-              className="nav-btn"
-              onClick={goUp}
-              disabled={path.length === basePath.length}
-              title="Back"
-              aria-label="Back"
-            >
+            <button className="nav-btn" onClick={goUp} disabled={path.length === basePath.length} title="Back" aria-label="Back">
               <img src="/assets/icons/back_arrow.svg" alt="Back" className="nav-icon" />
             </button>
           </div>
@@ -225,16 +135,10 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
             <div className="address-path">
               {path.map((segment, idx) => (
                 <span key={idx} className="path-wrapper">
-                  <button
-                    className="path-segment"
-                    onClick={() => goToIndex(idx)}
-                    aria-current={idx === path.length - 1 ? 'page' : undefined}
-                  >
+                  <button className="path-segment" onClick={() => goToIndex(idx)} disabled={idx < basePath.length - 1} aria-current={idx === path.length - 1 ? 'page' : undefined}>
                     {segment}
                   </button>
-                  {idx < path.length - 1 && (
-                    <img src="/assets/icons/arrow_right.svg" alt="" className="chevron-icon" />
-                  )}
+                  {idx < path.length - 1 && (<img src="/assets/icons/arrow_right.svg" alt="" className="chevron-icon" />)}
                 </span>
               ))}
             </div>
@@ -242,7 +146,7 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
         </div>
 
         <div className="explorer-body">
-          <aside className="explorer-sidebar" aria-label="Profile sections">
+          <aside className="profile-sidebar" aria-label="Profile sections">
             <div className="sidebar-section">
               <div className="sidebar-title">Social Links</div>
               <div className="sidebar-list">
@@ -268,27 +172,7 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
             </div>
           </aside>
 
-          <div className="explorer-main">
-            {path.length === basePath.length ? (
-              <div className="explorer-grid">
-                <button className="folder-item" title="Placeholder1" onDoubleClick={() => openFolder('Placeholder1')}>
-                  <img src="/assets/icons/folder.png" alt="Folder" className="folder-icon" />
-                  <span className="folder-name">Placeholder1</span>
-                </button>
-                <button className="folder-item" title="Placeholder2" onDoubleClick={() => openFolder('Placeholder2')}>
-                  <img src="/assets/icons/folder.png" alt="Folder" className="folder-icon" />
-                  <span className="folder-name">Placeholder2</span>
-                </button>
-              </div>
-            ) : (
-              <div className="folder-view">
-                <div className="empty-state">
-                  <img src="/assets/icons/file explorer.png" alt="Folder" className="folder-icon" />
-                  <p>This folder is empty</p>
-                </div>
-              </div>
-            )}
-          </div>
+          <div className="profile-main" />
         </div>
       </div>
     </div>

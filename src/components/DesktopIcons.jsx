@@ -4,9 +4,17 @@ import './DesktopIcons.css';
 const GRID_SIZE = 100;
 
 const INITIAL_ICONS = [
+    {
+    id: 6,
+    name: 'Profile',
+    image: '/assets/icons/profile.png',
+    x: 20,
+    y: 20,
+    appKey: 'profile',
+  },
   {
     id: 1,
-    name: 'Folder',
+    name: 'Projects',
     image: '/assets/icons/folder.png',
     x: 20,
     y: 20,
@@ -18,11 +26,11 @@ const INITIAL_ICONS = [
     image: '/assets/icons/pdf.jpg',
     x: 20,
     y: 120,
-    appKey: 'resume', // Opens PDF file
+    appKey: 'resume',
   },
   {
     id: 3,
-    name: 'My GitHub',
+    name: 'GitHub',
     image: '/assets/icons/github.svg',
     x: 20,
     y: 220,
@@ -48,7 +56,7 @@ const INITIAL_ICONS = [
 
 export default function DesktopIcons({ onOpenApp, openApps = {}, minimizedApps = {}, onMinimizeApp }) {
   const [icons, setIcons] = useState(() => {
-    // Initialize icons with proper grid positions (auto-arranged)
+    // Initialize icons with proper grid positions
     return INITIAL_ICONS.map((icon, index) => ({
       ...icon,
       x: 0,
@@ -104,7 +112,6 @@ export default function DesktopIcons({ onOpenApp, openApps = {}, minimizedApps =
               
               // Search in expanding spiral pattern
               for (let radius = 1; radius <= 10 && !foundPosition; radius++) {
-                // Try positions around the target
                 const positions = [
                   { x: testX + (radius * GRID_SIZE), y: testY },
                   { x: testX - (radius * GRID_SIZE), y: testY },
@@ -113,7 +120,7 @@ export default function DesktopIcons({ onOpenApp, openApps = {}, minimizedApps =
                 ];
                 
                 for (const pos of positions) {
-                  if (pos.x >= 0 && pos.y >= 0) { // Keep within bounds
+                  if (pos.x >= 0 && pos.y >= 0) {
                     const collision = prevIcons.some(otherIcon => 
                       otherIcon.id !== icon.id && 
                       otherIcon.x === pos.x && 

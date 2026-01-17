@@ -13,6 +13,9 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
   const [commits, setCommits] = useState([]);
   const [loadingCommits, setLoadingCommits] = useState(true);
   const [commitError, setCommitError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMoreCommits, setHasMoreCommits] = useState(true);
+  const PER_PAGE = 20;
   const [repoInfo, setRepoInfo] = useState(null);
   const [loadingRepo, setLoadingRepo] = useState(true);
 
@@ -24,23 +27,26 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
   }, []);
 
   // Fetch commits from GitHub API
-  const fetchCommits = async () => {
+  const fetchCommits = async (pageToLoad = 1, append = false) => {
     try {
       setLoadingCommits(true);
       setCommitError(null);
-      const response = await fetch('https://api.github.com/repos/lephucdatl6/portfolio-os/commits?per_page=5');
+      const response = await fetch(`https://api.github.com/repos/lephucdatl6/portfolio-os/commits?per_page=${PER_PAGE}&page=${pageToLoad}`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch commits: ${response.status}`);
       }
       
       const commitsData = await response.json();
-      setCommits(commitsData);
+      setHasMoreCommits(commitsData.length === PER_PAGE);
+      setCommits(prev => append ? [...prev, ...commitsData] : commitsData);
+      setPage(pageToLoad);
     } catch (error) {
       console.error('Error fetching commits:', error);
       setCommitError(error.message);
       // Fallback to mock data if API fails
-      setCommits([
+      if (!append) {
+        setCommits([
         {
           sha: 'mock1',
           commit: {
@@ -59,7 +65,8 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
             }
           }
         }
-      ]);
+        ]);
+      }
     } finally {
       setLoadingCommits(false);
     }
@@ -91,7 +98,7 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
 
   // Fetch commits and repo info on component mount
   useEffect(() => {
-    fetchCommits();
+    fetchCommits(1, false);
     fetchRepoInfo();
   }, []);
 
@@ -253,7 +260,7 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
       {/* Window header */}
       <div className="github-header">
         <div className="github-title">
-          <span>My GitHub</span>
+          <span>GitHub</span>
         </div>
         <div className="github-controls">
           <button className="control-btn minimize-btn" onClick={onMinimize}>
@@ -313,6 +320,14 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
                   <div className="commit-message">No commits found</div>
                   <div className="commit-meta">Repository may be empty</div>
                 </div>
+              )}
+              {!loadingCommits && hasMoreCommits && (
+                <button
+                  className="load-more-btn"
+                  onClick={() => fetchCommits(page + 1, true)}
+                >
+                  Load more
+                </button>
               )}
             </div>
           </div>

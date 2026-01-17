@@ -9,6 +9,7 @@ import PdfViewerWindow from './windows/PdfViewerWindow'
 import GitHubWindow from './windows/GitHubWindow'
 import FolderWindow from './windows/FolderWindow'
 import TerminalWindow from './windows/TerminalWindow'
+import ProfileWindow from './windows/ProfileWindow'
 import ContactForm from './components/ContactForm'
 
 function App() {
@@ -150,6 +151,17 @@ function App() {
               zIndex={getWindowZIndex('projects')}
               isMaximized={maximizedApps.projects}
               isMinimized={minimizedApps.projects}
+            />
+          )}
+          {openApps.profile && (
+            <ProfileWindow 
+              onClose={() => handleCloseApp('profile')}
+              onMinimize={() => handleMinimizeApp('profile')}
+              onMaximize={() => handleMaximizeApp('profile')}
+              onFocus={() => handleFocusApp('profile')}
+              zIndex={getWindowZIndex('profile')}
+              isMaximized={maximizedApps.profile}
+              isMinimized={minimizedApps.profile}
             />
           )}
           {openApps.about && (
