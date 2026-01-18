@@ -251,58 +251,6 @@
   height: calc(100% - 58px);
 }
 
-.explorer-sidebar {
-  width: 220px;
-  flex-shrink: 0;
-  border-right: 1px solid #e1e5e9;
-  background: #ffffff;
-  padding-right: 8px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.sidebar-section { margin-bottom: 12px; }
-.sidebar-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #8c959f;
-  font-size: 12px;
-  font-weight: 600;
-  margin: 10px 8px;
-  text-transform: uppercase;
-}
-
-.sidebar-title::before,
-.sidebar-title::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: #e1e5e9;
-}
-
-.sidebar-list { display: flex; flex-direction: column; gap: 4px; }
-.sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  color: #24292f;
-  background: transparent;
-  border: none;
-  width: 100%;
-  text-align: left;
-  -webkit-tap-highlight-color: transparent;
-}
-.sidebar-item:focus { outline: none; }
-.sidebar-item:focus-visible { outline: none; }
-.sidebar-item::-moz-focus-inner { border: 0; }
-.sidebar-item:hover { background: #f6f8fa; }
-.sidebar-item.active { background: #eef2f6; }
-.sidebar-item .icon { width: 18px; height: 18px; object-fit: contain; }
-
 .explorer-main { flex: 1; min-width: 0; }
 
 .explorer-toolbar {
@@ -341,7 +289,7 @@
   border-radius: 8px;
   padding: 6px 10px;
 }
-.address-path { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
+.address-path { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;}
 .path-segment {
   border: none;
   background: transparent;
@@ -350,9 +298,10 @@
   padding: 2px 6px;
   border-radius: 6px;
   cursor: pointer;
+  outline: none;
 }
-.path-segment[aria-current='page'] { font-weight: 600; }
-.path-segment:hover { background: #f1f4f7; }
+.path-segment[aria-current='page'] { font-weight: 600; outline: none; }
+.path-segment:hover { background: #f1f4f7; outline: none;}
 .chevron { color: #8c959f; }
 .chevron-icon {
   width: 10px;
@@ -437,7 +386,6 @@
     padding: 12px;
   }
   .explorer-body { gap: 12px; height: calc(100% - 56px); }
-  .explorer-sidebar { display: none; }
   .explorer-grid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 12px;

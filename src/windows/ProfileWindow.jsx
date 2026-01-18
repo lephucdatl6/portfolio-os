@@ -9,14 +9,25 @@ export default function ProfileWindow({ onClose, onMinimize, onMaximize, onFocus
   const [resizeType, setResizeType] = useState('');
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0, posX: 0, posY: 0 });
+  const [aboutMe, setAboutMe] = useState('');
 
-  const basePath = ['Profile'];
+  const basePath = ['This PC', 'Profile'];
   const [path, setPath] = useState(basePath);
 
   useEffect(() => {
     const centerX = window.innerWidth / 2 - size.width / 2;
     const centerY = window.innerHeight / 2 - size.height / 2;
     setPosition({ x: centerX, y: centerY });
+  }, []);
+
+  // Load About Me content from public/text
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/text/about-me.txt')
+      .then((res) => res.ok ? res.text() : Promise.reject(new Error('Failed to load about-me.txt')))
+      .then((text) => { if (isMounted) setAboutMe(text); })
+      .catch(() => { /* silently ignore; use placeholder */ });
+    return () => { isMounted = false; };
   }, []);
 
   const handleMouseDown = (e) => {
@@ -135,7 +146,7 @@ export default function ProfileWindow({ onClose, onMinimize, onMaximize, onFocus
             <div className="address-path">
               {path.map((segment, idx) => (
                 <span key={idx} className="path-wrapper">
-                  <button className="path-segment" onClick={() => goToIndex(idx)} disabled={idx < basePath.length - 1} aria-current={idx === path.length - 1 ? 'page' : undefined}>
+                  <button className="path-segment" onClick={() => goToIndex(idx)} aria-current={idx === path.length - 1 ? 'page' : undefined}>
                     {segment}
                   </button>
                   {idx < path.length - 1 && (<img src="/assets/icons/arrow_right.svg" alt="" className="chevron-icon" />)}
@@ -161,18 +172,51 @@ export default function ProfileWindow({ onClose, onMinimize, onMaximize, onFocus
             <div className="sidebar-section">
               <div className="sidebar-title">Skills</div>
               <div className="sidebar-list">
-                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>Placeholder</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>Web Development</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>Mobile Development</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>UI-Oriented Development</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>Full Application Flow</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>API Integration</span></div>
               </div>
             </div>
             <div className="sidebar-section">
-              <div className="sidebar-title">Software</div>
+              <div className="sidebar-title">Tech stack</div>
               <div className="sidebar-list">
-                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>Placeholder</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>React Native</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>React (Web)</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>JavaScript</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>TypeScript</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>Node.js</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>HTML / CSS</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>MongoDB</span></div>
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>PostgreSQL</span></div>
               </div>
             </div>
           </aside>
 
-          <div className="profile-main" />
+          <div className="profile-main">
+            <div className="info-card">
+              <div className="about-card">
+              <div className="info-title">
+                <span>About Me</span>
+              </div>
+                <div className="about-content">
+                  <p className="about-paragraph">
+                    I am a final-year computing student currently completing my OJT as part of my graduation. I am focused on becoming a full-stack / web / mobile developer, with a strong interest in building real-world applications that are both functional and well-designed. I consider myself a fast learner who adapts quickly, works independently when needed, and collaborates well in a team environment.
+                  </p>
+
+                  <p className="about-paragraph">
+                    I chose computing because it allows me to turn ideas into real projects and solve practical problems through technology. I especially enjoy logic, problem solving, and building complete applications from start to finish, where I can see how each part connects. Working on projects has helped me develop a detail-oriented mindset and a habit of continuously improving my work.
+                  </p>
+
+                  <p className="about-paragraph">
+                    This portfolio is designed as a Windows-style desktop experience because it is familiar and intuitive, making it easy for non-technical users to explore while still demonstrating my technical and UI thinking. This portfolio itself is one of my personal projects, built while I continue learning React for web and mobile development. My short-term goal is to secure a junior role and learn industry best practices through real professional experience.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
     </div>

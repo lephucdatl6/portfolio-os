@@ -242,32 +242,6 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
         </div>
 
         <div className="explorer-body">
-          <aside className="explorer-sidebar" aria-label="Profile sections">
-            <div className="sidebar-section">
-              <div className="sidebar-title">Social Links</div>
-              <div className="sidebar-list">
-                <button className="sidebar-item" onClick={() => window.open('https://github.com/lephucdatl6', '_blank')} title="GitHub">
-                  <img className="icon" src="/assets/icons/github.svg" alt="" /><span>GitHub</span>
-                </button>
-                <button className="sidebar-item" onClick={() => window.open('https://www.linkedin.com/in/dat-le-b500a61bb', '_blank')} title="LinkedIn">
-                  <img className="icon" src="/assets/icons/linkedin.png" alt="" /><span>LinkedIn</span>
-                </button>
-              </div>
-            </div>
-            <div className="sidebar-section">
-              <div className="sidebar-title">Skills</div>
-              <div className="sidebar-list">
-                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>Placeholder</span></div>
-              </div>
-            </div>
-            <div className="sidebar-section">
-              <div className="sidebar-title">Software</div>
-              <div className="sidebar-list">
-                <div className="sidebar-item"><img className="icon" src="/assets/icons/placeholder.png" alt="" /><span>Placeholder</span></div>
-              </div>
-            </div>
-          </aside>
-
           <div className="explorer-main">
             {path.length === basePath.length ? (
               <div className="explorer-grid">
