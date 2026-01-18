@@ -6,7 +6,7 @@ const GRID_SIZE = 100;
 const INITIAL_ICONS = [
     {
     id: 6,
-    name: 'Profile',
+    name: 'About Me',
     image: '/assets/icons/profile.png',
     x: 20,
     y: 20,
@@ -50,7 +50,7 @@ const INITIAL_ICONS = [
     image: '/assets/icons/terminal.png',
     x: 20,
     y: 420,
-    appKey: 'about',
+    appKey: 'terminal',
   },
 ];
 

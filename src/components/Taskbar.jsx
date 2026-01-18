@@ -125,12 +125,12 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
       profile: {
         icon: '/assets/icons/profile.png',
         alt: 'Profile',
-        title: minimizedApps.profile ? 'Profile' : 'Profile'
+        title: minimizedApps.profile ? 'Profile' : 'About Me'
       },
-      about: {
+      terminal: {
         icon: '/assets/icons/terminal.png',
         alt: 'Terminal',
-        title: minimizedApps.about ? 'Terminal' : 'Terminal'
+        title: minimizedApps.terminal ? 'Terminal' : 'Terminal'
       }
     };
 

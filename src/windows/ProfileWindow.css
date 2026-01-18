@@ -11,15 +11,16 @@
   overflow: hidden;
   user-select: none;
   position: fixed;
+  animation: projectsWindowOpen 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 .profile-window.maximized {
   width: 100%;
-  height: calc(100% - 60px);
+  height: calc(100vh - 60px);
   top: 0;
   left: 0;
   right: 0;
-  bottom: 60px;
+  bottom: auto;
   border-radius: 0;
 }
 
@@ -111,6 +112,7 @@
   border-radius: 6px;
   color: #24292f;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .nav-btn:disabled {
@@ -118,10 +120,31 @@
   cursor: default;
 }
 
+.nav-btn.sidebar-toggle,
+.nav-btn.sidebar-toggle:focus,
+.nav-btn.sidebar-toggle:focus-visible,
+.nav-btn.sidebar-toggle:active {
+  outline: none;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-btn.sidebar-toggle {
+  display: inline-flex;
+}
+
 .nav-icon {
   width: 14px;
   height: 14px;
   pointer-events: none;
+}
+
+.nav-btn:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.nav-btn.sidebar-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.06);
 }
 
 .address-bar {
@@ -186,22 +209,36 @@
 .explorer-body {
   display: flex;
   gap: 16px;
-  height: calc(100% - 58px);
+  /* allow the body to grow and let its children control scrolling */
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.profile-content {
+  position: relative;
 }
 
 .profile-sidebar {
-  width: 220px;
-  flex-shrink: 0;
-  padding-right: 8px;
+  /* collapsed by default on wide screens; use .open to expand */
+  width: 0;
+  flex: 0 0 0;
+  padding-right: 0;
   background: #ffffff;
-  border-right: 1px solid #e1e5e9;
-
-  overflow-y: auto;
+  border-right: none;
+  overflow: hidden;
   overflow-x: hidden;
+  transition: width 0.22s ease, padding 0.22s ease, box-shadow 0.22s ease;
+}
+
+.profile-sidebar.open {
+  width: 180px;
+  flex: 0 0 180px;
+  padding-right: 8px;
+  border-right: 1px solid #e1e5e9;
+  overflow: auto;
 }
 
 .sidebar-section {
-  margin-bottom: 2px;
+  margin-bottom: 8px;
   font-size: 12px;
 }
 
@@ -241,9 +278,13 @@
   border-radius: 6px;
   text-align: left;
   color: #24292f;
-  cursor: pointer;
+  cursor: default;
 
   -webkit-tap-highlight-color: transparent;
+}
+
+.sidebar-item.clickable {
+  cursor: pointer;
 }
 
 .sidebar-item:focus,
@@ -264,8 +305,11 @@
 .profile-main {
   flex: 1;
   min-width: 0;
+  min-height: 0;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
+
 
 .info-card {
   margin-bottom: 12px;
@@ -432,11 +476,71 @@
 
   .explorer-body {
     gap: 12px;
-    height: calc(100% - 56px);
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   .profile-sidebar {
+    /* sliding drawer on mobile */
+    display: block;
+    position: absolute;
+    top: 60px;
+    left: 1px;
+    width: 80%;
+    max-width: 320px;
+    height: calc(100% - 80px);
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+    background: #ffffff;
+    border-right: 1px solid #e1e5e9;
+    z-index: 1200;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ensure main content has extra bottom padding so last lines aren't hidden by taskbar */
+  .profile-main {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .profile-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
     display: none;
+  }
+
+  .sidebar-backdrop.visible {
+    display: block;
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.28);
+    z-index: 1100;
+  }
+
+  .nav-btn.sidebar-toggle {
+    display: inline-flex;
+    outline: none;
+  }
+
+  /* reduce text and paddings for mobile */
+  .about-content {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .info-card {
+    padding: 12px;
+  }
+
+  .about-card {
+    padding: 20px;
   }
 }
 

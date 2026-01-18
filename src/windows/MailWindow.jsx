@@ -19,8 +19,8 @@ export default function Mail({ onClose, onMinimize, onMaximize, onFocus, zIndex,
 
   // Initialize position to center on mount
   useEffect(() => {
-    const centerX = window.innerWidth / 2 - 300;
-    const centerY = window.innerHeight / 2 - 350; 
+    const centerX = window.innerWidth / 2 - size.width / 2;
+    const centerY = (window.innerHeight - 70) / 2 - size.height / 2;
     setPosition({ x: centerX, y: centerY });
   }, []);
 

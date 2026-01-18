@@ -164,15 +164,15 @@ function App() {
               isMinimized={minimizedApps.profile}
             />
           )}
-          {openApps.about && (
+          {openApps.terminal && (
             <TerminalWindow 
-              onClose={() => handleCloseApp('about')}
-              onMinimize={() => handleMinimizeApp('about')}
-              onMaximize={() => handleMaximizeApp('about')}
-              onFocus={() => handleFocusApp('about')}
-              zIndex={getWindowZIndex('about')}
-              isMaximized={maximizedApps.about}
-              isMinimized={minimizedApps.about}
+              onClose={() => handleCloseApp('terminal')}
+              onMinimize={() => handleMinimizeApp('terminal')}
+              onMaximize={() => handleMaximizeApp('terminal')}
+              onFocus={() => handleFocusApp('terminal')}
+              zIndex={getWindowZIndex('terminal')}
+              isMaximized={maximizedApps.terminal}
+              isMinimized={minimizedApps.terminal}
             />
           )}
           {openApps.contact && (

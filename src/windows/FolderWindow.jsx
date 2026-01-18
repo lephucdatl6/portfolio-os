@@ -14,8 +14,8 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
   const [path, setPath] = useState(basePath);
 
   useEffect(() => {
-    const centerX = window.innerWidth / 2 - 450;
-    const centerY = window.innerHeight / 2 - 350; 
+    const centerX = window.innerWidth / 2 - size.width / 2;
+    const centerY = (window.innerHeight - 70) / 2 - size.height / 2;
     setPosition({ x: centerX, y: centerY });
   }, []);
 

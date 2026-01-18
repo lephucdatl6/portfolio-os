@@ -4,7 +4,7 @@ import './TerminalWindow.css';
 export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocus, zIndex, isMaximized, isMinimized }) {
   const TASKBAR_HEIGHT = 60;
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [size, setSize] = useState({ width: 900, height: 700 });
+  const [size, setSize] = useState({ width: 1100, height: 700 });
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeType, setResizeType] = useState('');
@@ -12,8 +12,8 @@ export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocu
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0, posX: 0, posY: 0 });
 
   useEffect(() => {
-    const centerX = window.innerWidth / 2 - 450;
-    const centerY = window.innerHeight / 2 - 350; 
+    const centerX = window.innerWidth / 2 - size.width / 2;
+    const centerY = (window.innerHeight - 70) / 2 - size.height / 2; 
     setPosition({ x: centerX, y: centerY });
   }, []);
 

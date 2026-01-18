@@ -4,7 +4,7 @@ import './PdfViewerWindow.css';
 export default function PdfViewer({ onClose, onMinimize, onMaximize, onFocus, zIndex, isMaximized, isMinimized }) {
   const TASKBAR_HEIGHT = 60;
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [size, setSize] = useState({ width: 800, height: 600 });
+  const [size, setSize] = useState({ width: 1000, height: 700 });
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeType, setResizeType] = useState('');
@@ -13,8 +13,8 @@ export default function PdfViewer({ onClose, onMinimize, onMaximize, onFocus, zI
 
   // Initialize position to center on mount
   useEffect(() => {
-    const centerX = window.innerWidth / 2 - 400;
-    const centerY = window.innerHeight / 2 - 300; 
+    const centerX = window.innerWidth / 2 - size.width / 2;
+    const centerY = (window.innerHeight - 70) / 2 - size.height / 2;
     setPosition({ x: centerX, y: centerY });
   }, []);
 
