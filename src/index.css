@@ -13,6 +13,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  zoom: 0.9;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
