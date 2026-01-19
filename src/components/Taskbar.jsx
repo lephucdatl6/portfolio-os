@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './Taskbar.css';
 import StartMenu from './StartMenu';
 
-export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimizedApps = {}, onMinimizeApp, onFocusApp, appOpenOrder = [], onShutdown }) {
+export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimizedApps = {}, onMinimizeApp, onFocusApp, appOpenOrder = [], focusedApp = null, onShutdown }) {
   const [time, setTime] = useState(new Date());
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -137,16 +137,33 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
     const config = appConfig[appName];
     if (!config) return null;
 
+    const isFocused = focusedApp === appName;
+    // If focused => show active/open style; otherwise show minimized/gray style
+    const stateClass = isFocused ? 'open' : 'minimized';
+
+    const handleClick = () => {
+      // If the app is minimized, restore and focus it
+      if (minimizedApps[appName]) {
+        onMinimizeApp(appName); // toggle to restore
+        if (onFocusApp) onFocusApp(appName);
+        return;
+      }
+
+      // If already focused, minimize it
+      if (isFocused) {
+        onMinimizeApp(appName);
+        return;
+      }
+
+      // Otherwise focus the app
+      if (onFocusApp) onFocusApp(appName);
+    };
+
     return (
-      <button 
+      <button
         key={appName}
-        className={`app-icon ${minimizedApps[appName] ? 'minimized' : 'open'}`}
-        onClick={() => {
-          onMinimizeApp(appName);
-          if (minimizedApps[appName] && onFocusApp) {
-            onFocusApp(appName);
-          }
-        }}
+        className={`app-icon ${stateClass}`}
+        onClick={handleClick}
         title={config.title}
       >
         <img src={config.icon} alt={config.alt} />
@@ -209,7 +226,7 @@ export default function Taskbar({ openApps = {}, onOpenApp, onCloseApp, minimize
         {/* Center Apps */}
         <div className="taskbar-center">
           {/* App Icons in opening order */}
-          {appOpenOrder.map(appName => renderAppIcon(appName))}
+          {Array.from(new Set(appOpenOrder)).map(appName => renderAppIcon(appName))}
         </div>
 
         {/* Right Spacer */}

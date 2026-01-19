@@ -1,16 +1,83 @@
-# React + Vite
+# Portfolio OS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Windows-inspired developer portfolio built with React and Vite.
 
-Currently, two official plugins are available:
+Portfolio OS presents my profile and projects through a desktop-style interface with windows, icons, a taskbar, and lightweight mock-applications. The project showcases UI design, component structure, and interactive state management.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## Table of contents
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- [Overview](#overview)  
+- [Features](#features)  
+- [Tech stack](#tech-stack)  
+- [Project structure](#project-structure)  
+- [Purpose](#purpose)
+- [Contact](#contact)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Overview
+
+Portfolio OS simulates a familiar desktop environment to make exploring a portfolio intuitive and engaging. It prioritizes discoverability for non-technical visitors while demonstrating front-end structure and interactions for technical viewers.
+
+Key ideas:
+- Desktop metaphors: windows, taskbar, start menu, and icons
+- Component-based design for isolated app windows
+- Lightweight animations and responsive adjustments for various screen sizes
+
+---
+
+## Features
+
+- Window-based UI: open, close, focus, minimize, and maximize
+- Desktop layout with draggable icons and a start menu
+- Taskbar that indicates open apps and allows quick focus/restore
+- Profile section (about, skills, social links)
+- Projects explorer with categorized projects and details
+- Resume (PDF) viewer built into a window
+- Contact form with mail-to fallback
+- Terminal-like interactive sandbox
+- Responsive behavior for small screens and touch devices
+
+---
+
+## Tech stack
+
+**Frontend**
+- ReactJS
+- JavaScript
+- HTML & CSS
+
+**Tooling**
+- Vite (dev server & build)
+- Vercel (Deployment)
+
+---
+
+## Project structure (high level)
+
+```
+src/
+├─ components/     — reusable UI pieces (Taskbar, StartMenu, Icon, WindowFrame, etc.)
+├─ layouts/        — top-level layouts (Desktop layout)
+├─ windows/        — window components (Folder, Mail, PDF, etc.)
+├─ assets/         — images, icons
+├─ App.jsx         — application root and state management
+public/
+└─ assets/         — static assets served at runtime
+```
+---
+
+## Purpose
+
+This repository was built to:
+- Practice building a React app with interactive UI patterns
+- Explore desktop-like interfaces and component composition
+- Present projects in an engaging, organized way
+- Demonstrate attention to UX details such as focus, stacking, and animations
+
+---
+## Contact
+
+Email: pdat.dev@gmail.com

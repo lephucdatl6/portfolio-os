@@ -79,7 +79,7 @@
   }
   100% {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: none;
   }
 }
 
@@ -95,7 +95,20 @@
 }
 
 .pdf-window.minimized {
-  display: none;
+  transform-origin: bottom center;
+  animation: pdfWindowClose 0.18s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes pdfWindowClose {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: none;
+  }
 }
 
 .pdf-header {

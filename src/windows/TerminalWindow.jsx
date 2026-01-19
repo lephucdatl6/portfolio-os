@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './TerminalWindow.css';
 
 export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocus, zIndex, isMaximized, isMinimized }) {
@@ -11,6 +11,12 @@ export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocu
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0, posX: 0, posY: 0 });
 
+  const PROMPT = 'C:\\Users\\Dave>';
+  const contentRef = useRef(null);
+  const inputRef = useRef(null);
+  const [history, setHistory] = useState([]);
+  const [currentInput, setCurrentInput] = useState('');
+
   useEffect(() => {
     const centerX = window.innerWidth / 2 - size.width / 2;
     const centerY = (window.innerHeight - 70) / 2 - size.height / 2; 
@@ -18,6 +24,8 @@ export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocu
   }, []);
 
   const handleMouseDown = (e) => {
+    // Only allow dragging when clicking on the header
+    if (!e.target.closest('.terminal-header')) return;
     if (e.target.closest('.terminal-controls') || e.target.closest('.resize-handle')) return;
     setIsDragging(true);
     setDragOffset({
@@ -125,7 +133,106 @@ export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocu
     }
   }, [isDragging, isResizing, dragOffset, resizeStart, resizeType]);
 
-  if (isMinimized) return null;
+  // Initialize terminal with hint and initial prompt
+  useEffect(() => {
+    setHistory([
+      'Type "help" to see available commands.',
+    ]);
+  }, []);
+
+  // Auto scroll to bottom on updates
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = contentRef.current.scrollHeight;
+    }
+  }, [history, currentInput]);
+
+  // Focus input when window gets focus
+  useEffect(() => {
+    if (onFocus && inputRef.current) {
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+      if (!isMobile) inputRef.current.focus();
+    }
+  }, [onFocus]);
+
+  const commandOutput = (cmd) => {
+    switch (cmd.toLowerCase()) {
+      case 'help':
+        return [
+          'Available commands:',
+          '- about      Short introduction',
+          '- skills     Technical focus areas',
+          '- projects   Featured and experimental work',
+          '- contact    How to reach me',
+          '- clear      Clear terminal',
+        ];
+      case 'about':
+        return [
+          'Hi, I\'m Dat.',
+          'I\'m a final-year Computing student doing my OJT.',
+          'I enjoy building applications and learning by doing.',
+          'This portfolio is part of that learning.',
+          '  ',
+        ];
+      case 'skills':
+        return [
+          'Frontend:',
+          '- React, React Native, Vite',
+          '- TypeScript, JavaScript, HTML, CSS',
+          'Backend:',
+          '- Node.js, Express, REST APIs',
+          'Databases:',
+          '- MongoDB, PostgreSQL, Firebase',
+          ' ',
+        ];
+      case 'projects':
+        return [
+          'Featured Projects:',
+          '- RecipeShare: A full-stack social platform for sharing recipes.',
+          '- Portfolio OS: This interactive portfolio site simulating a desktop OS.',
+          ' ',
+          'Experimental Projects:',
+          '- Classroom scheduler: A tool to help user plan their class schedules.',
+          '- Web Stack & Databases: Comparative analysis of web stacks and databases.',
+          '- Python Video Player: A video player built with Python and OOP principles.',
+          '- Academic Records System: A CRUD application for managing student records.',
+          ' ',
+        ];
+      case 'contact':
+        return [
+          'Contact:',
+          '- Email: pdat.dev@gmail.com',
+          '- Or use the Contact me from the desktop',
+        ];
+      case 'clear':
+        return null;
+      default:
+        return [
+          `\'${cmd}\' is not recognized as an internal or external command.`,
+          'Type "help" to see available commands.',
+        ];
+    }
+  };
+
+  const onSubmitCommand = () => {
+    const cmd = currentInput.trim();
+    const promptLine = `${PROMPT} ${cmd}`;
+    if (!cmd) {
+      setHistory((prev) => [...prev, promptLine]);
+      setCurrentInput('');
+      return;
+    }
+
+    if (cmd.toLowerCase() === 'clear') {
+      setHistory(['Type "help" to see available commands.']);
+      setCurrentInput('');
+      return;
+    }
+
+    const out = commandOutput(cmd);
+    setHistory((prev) => [...prev, promptLine, ...(out || [])]);
+    setCurrentInput('');
+  };
 
   return (
     <div 
@@ -177,8 +284,34 @@ export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocu
       </div>
 
       {/* Terminal content */}
-      <div className="terminal-content">
-        {/* Content will be added here */}
+      <div
+        className="terminal-content"
+        ref={contentRef}
+        onClick={() => inputRef.current && inputRef.current.focus()}
+      >
+        <div className="terminal-inner">
+          {history.map((line, idx) => (
+            <div key={idx} className="terminal-line">{line}</div>
+          ))}
+          <div className="terminal-prompt-line">
+            <span className="terminal-prompt">{PROMPT}&nbsp;</span>
+            <input
+              ref={inputRef}
+              className="terminal-input"
+              value={currentInput}
+              onChange={(e) => setCurrentInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  onSubmitCommand();
+                }
+              }}
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

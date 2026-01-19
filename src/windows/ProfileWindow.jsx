@@ -100,8 +100,6 @@ export default function ProfileWindow({ onClose, onMinimize, onMaximize, onFocus
     }
   }, [isDragging, isResizing, dragOffset, resizeStart, resizeType]);
 
-  if (isMinimized) return null;
-
   const goUp = () => { setPath((prev) => (prev.length > basePath.length ? prev.slice(0, prev.length - 1) : prev)); };
   const goToIndex = (index) => { setPath((prev) => (index < basePath.length - 1 ? prev : prev.slice(0, index + 1))); };
 

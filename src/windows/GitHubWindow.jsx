@@ -224,8 +224,6 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
     }
   }, [isDragging, isResizing, dragOffset, resizeStart, resizeType]);
 
-  if (isMinimized) return null;
-
   return (
     <div 
       className={`github-window ${isMaximized ? 'maximized' : ''} ${isMinimized ? 'minimized' : ''}`}

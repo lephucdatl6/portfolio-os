@@ -26,11 +26,9 @@ function App() {
       ...prev,
       [appName]: true
     }))
-    // Add to order if not already open
+    // Add to order only if not already present (keep taskbar order stable)
     setAppOpenOrder(prev => {
-      if (!prev.includes(appName)) {
-        return [...prev, appName]
-      }
+      if (!prev.includes(appName)) return [...prev, appName]
       return prev
     })
     // Focus the newly opened app
@@ -57,10 +55,23 @@ function App() {
   }
 
   const handleMinimizeApp = (appName) => {
-    setMinimizedApps(prev => ({
-      ...prev,
-      [appName]: !prev[appName]
-    }))
+    setMinimizedApps(prev => {
+      const isNowMinimized = !prev[appName];
+      const next = {
+        ...prev,
+        [appName]: isNowMinimized
+      };
+
+      // If minimizing the currently focused app, clear focus.
+      // If restoring, focus the app.
+      if (isNowMinimized) {
+        setFocusedApp(prevFocus => (prevFocus === appName ? null : prevFocus));
+      } else {
+        setFocusedApp(appName);
+      }
+
+      return next;
+    })
   }
 
   const handleMaximizeApp = (appName) => {
@@ -75,8 +86,11 @@ function App() {
   }
 
   const getWindowZIndex = (appName) => {
-    // Base z-index is 1000, focused window gets +100
-    return focusedApp === appName ? 1100 : 1000
+    // Focused app should always be on top
+    if (focusedApp === appName) return 2000
+    // Otherwise determine zIndex based on open order
+    const idx = appOpenOrder.indexOf(appName)
+    return 1000 + (idx >= 0 ? (idx + 1) * 10 : 0)
   }
 
   const handleShutdown = () => {
@@ -190,6 +204,7 @@ function App() {
             onMinimizeApp={handleMinimizeApp}
             onFocusApp={handleFocusApp}
             appOpenOrder={appOpenOrder}
+            focusedApp={focusedApp}
             onShutdown={handleShutdown}
           />
         </>

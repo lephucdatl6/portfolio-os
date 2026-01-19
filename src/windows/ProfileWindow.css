@@ -25,7 +25,9 @@
 }
 
 .profile-window.minimized {
-  display: none;
+  transform-origin: bottom center;
+  animation: projectsWindowClose 0.18s ease forwards;
+  pointer-events: none;
 }
 
 .profile-header {

@@ -120,6 +120,11 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
 
   const goToIndex = (index) => {
     setPath((prev) => {
+      if (index < basePath.length - 1) {
+        setSelectedProject(null);
+        return basePath;
+      }
+
       const newPath = prev.slice(0, index + 1);
       if (
         newPath.length >= basePath.length + 2 &&
@@ -168,8 +173,6 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
       };
     }
   }, [isDragging, isResizing, dragOffset, resizeStart, resizeType]);
-
-  if (isMinimized) return null;
 
   return (
     <div 
@@ -283,7 +286,7 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
 
                             <h4>Description</h4>
                             <p>I built this project to practice full-stack development and understand how real applications work end to end. The platform supports user authentication, recipe posting, and commenting features, with basic AI-assisted validation to help check content and support moderation. I worked on both frontend and backend logic to manage data flow, user interactions, and data consistency. </p>
-                            <p>Through this project, I improved my problem-solving skills, learned how to structure a complete application, and gained hands-on experience working with databases, APIs, and simple content moderation logic.</p>
+                            <p>Through this project, I improved my problem-solving skills and learned how to structure a full application. I also gained hands-on experience working with both NoSQL and SQL databases together, understanding how they can be combined effectively alongside APIs in a real project.</p>
                             <h4>Tech used</h4>
                             <div className="tag-list">
                               <span className="tag">React Native</span>

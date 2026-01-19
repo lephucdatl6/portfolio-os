@@ -24,7 +24,9 @@
 }
 
 .terminal-window.minimized {
-  display: none;
+  transform-origin: bottom center;
+  animation: terminalWindowClose 0.18s ease forwards;
+  pointer-events: none;
 }
 
 .terminal-header {
@@ -86,6 +88,40 @@
   background: #0c0c0c;
   overflow: auto;
   position: relative;
+}
+
+/* Terminal text area */
+.terminal-inner {
+  padding: 14px 16px;
+  color: #c0c0c0;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+  font-size: 20px;
+}
+
+.terminal-line {
+  white-space: pre-wrap;
+}
+
+.terminal-prompt-line {
+  display: flex;
+  align-items: center;
+}
+
+.terminal-prompt {
+  color: #c0c0c0;
+}
+
+.terminal-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #c0c0c0;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 20px;
+  flex: auto;
 }
 
 /* Resize handles */
@@ -167,12 +203,23 @@
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: none;
   }
 }
 
 .terminal-window {
   animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes terminalWindowClose {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: none;
+  }
 }
 
 /* Dark theme adjustments for maximized state */
