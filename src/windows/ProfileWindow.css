@@ -96,6 +96,14 @@
   color: #656d76;
 }
 
+.sidebar-item span {
+  text-decoration: none;
+}
+
+.sidebar-item.clickable:hover span {
+  text-decoration: underline;
+}
+
 .nav-buttons {
   display: flex;
   gap: 6px;
@@ -209,7 +217,6 @@
 .explorer-body {
   display: flex;
   gap: 16px;
-  /* allow the body to grow and let its children control scrolling */
   flex: 1 1 auto;
   min-height: 0;
 }
@@ -218,7 +225,6 @@
 }
 
 .profile-sidebar {
-  /* collapsed by default on wide screens; use .open to expand */
   width: 0;
   flex: 0 0 0;
   padding-right: 0;
