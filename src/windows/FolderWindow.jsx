@@ -15,10 +15,10 @@ export default function FolderWindow({ onClose, onMinimize, onMaximize, onFocus,
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
-    const centerX = window.innerWidth / 2 - size.width / 2;
-    const centerY = (window.innerHeight - 70) / 2 - size.height / 2;
-    setPosition({ x: centerX, y: centerY });
-  }, []);
+    const centerX = Math.round(window.innerWidth / 2 - size.width / 2);
+    const centerY = Math.round((window.innerHeight + 20) / 2 - size.height / 2);
+    setPosition({ x: Math.max(0, centerX), y: Math.max(0, centerY) });
+}, []);
 
   const handleMouseDown = (e) => {
     if (e.target.closest('.projects-controls') || e.target.closest('.resize-handle')) return;

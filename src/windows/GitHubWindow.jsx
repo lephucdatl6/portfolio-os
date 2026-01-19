@@ -19,12 +19,11 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
   const [repoInfo, setRepoInfo] = useState(null);
   const [loadingRepo, setLoadingRepo] = useState(true);
 
-  // Initialize position to center on mount
   useEffect(() => {
-    const centerX = window.innerWidth / 2 - size.width / 2;
-    const centerY = (window.innerHeight - 70) / 2 - size.height / 2;
-    setPosition({ x: centerX, y: centerY });
-  }, []);
+    const centerX = Math.round(window.innerWidth / 2 - size.width / 2);
+    const centerY = Math.round((window.innerHeight + 20) / 2 - size.height / 2);
+    setPosition({ x: Math.max(0, centerX), y: Math.max(0, centerY) });
+}, []);
 
   // Fetch commits from GitHub API
   const fetchCommits = async (pageToLoad = 1, append = false) => {

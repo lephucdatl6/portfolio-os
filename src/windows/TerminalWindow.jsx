@@ -18,10 +18,10 @@ export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocu
   const [currentInput, setCurrentInput] = useState('');
 
   useEffect(() => {
-    const centerX = window.innerWidth / 2 - size.width / 2;
-    const centerY = (window.innerHeight - 70) / 2 - size.height / 2; 
-    setPosition({ x: centerX, y: centerY });
-  }, []);
+    const centerX = Math.round(window.innerWidth / 2 - size.width / 2);
+    const centerY = Math.round((window.innerHeight + 20) / 2 - size.height / 2);
+    setPosition({ x: Math.max(0, centerX), y: Math.max(0, centerY) });
+}, []);
 
   const handleMouseDown = (e) => {
     // Only allow dragging when clicking on the header
