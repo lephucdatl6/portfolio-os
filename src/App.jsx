@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import { Analytics } from '@vercel/analytics/react'
 import LoginScreen from './components/LoginScreen'
 import ShutdownScreen from './components/ShutdownScreen'
 import DesktopLayout from './layouts/DesktopLayout'
@@ -209,6 +210,7 @@ function App() {
           />
         </>
       )}
+      <Analytics />
     </>
   )
 }
