@@ -71,6 +71,62 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
     }
   };
 
+  // Fetch all commits by paging through GitHub API
+  const fetchAllCommits = async () => {
+    try {
+      setLoadingCommits(true);
+      setCommitError(null);
+
+      let pageToLoad = 1;
+      const all = [];
+
+      while (true) {
+        const response = await fetch(`https://api.github.com/repos/lephucdatl6/portfolio-os/commits?per_page=${PER_PAGE}&page=${pageToLoad}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch commits: ${response.status}`);
+        }
+
+        const commitsData = await response.json();
+        all.push(...commitsData);
+
+        if (commitsData.length < PER_PAGE) {
+          break;
+        }
+        pageToLoad += 1;
+      }
+
+      setCommits(all);
+      setHasMoreCommits(false);
+      setPage(pageToLoad);
+    } catch (error) {
+      console.error('Error fetching commits:', error);
+      setCommitError(error.message);
+      // Fallback to mock data if API fails
+      setCommits([
+        {
+          sha: 'mock1',
+          commit: {
+            message: 'Add GitHub Desktop window',
+            author: {
+              date: new Date(Date.now() - 2 * 60 * 1000).toISOString()
+            }
+          }
+        },
+        {
+          sha: 'mock2',
+          commit: {
+            message: 'Initial portfolio setup',
+            author: {
+              date: new Date(Date.now() - 60 * 60 * 1000).toISOString()
+            }
+          }
+        }
+      ]);
+    } finally {
+      setLoadingCommits(false);
+    }
+  };
+
   // Fetch repository information from GitHub API
   const fetchRepoInfo = async () => {
     try {
@@ -97,7 +153,7 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
 
   // Fetch commits and repo info on component mount
   useEffect(() => {
-    fetchCommits(1, false);
+    fetchAllCommits();
     fetchRepoInfo();
   }, []);
 
@@ -317,14 +373,6 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
                   <div className="commit-message">No commits found</div>
                   <div className="commit-meta">Repository may be empty</div>
                 </div>
-              )}
-              {!loadingCommits && hasMoreCommits && (
-                <button
-                  className="load-more-btn"
-                  onClick={() => fetchCommits(page + 1, true)}
-                >
-                  Load more
-                </button>
               )}
             </div>
           </div>

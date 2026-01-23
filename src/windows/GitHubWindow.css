@@ -127,6 +127,12 @@
   overscroll-behavior: contain;
 }
 
+.sidebar-section:last-child .commit-list {
+  padding-bottom: 12px;
+  padding-right: 6px;
+  box-sizing: border-box;
+}
+
 /* Desktop scrollbar styling */
 @media (min-width: 769px) {
   .sidebar-section:last-child .commit-list {
