@@ -98,6 +98,12 @@ export default function LoginScreen({ onLoginComplete }) {
           )}
         </div>
       </div>
+
+      {!isLoading && (
+        <div className="sign-in-fixed">
+          <p className="fullscreen-note">Go fullscreen for the best experience (press F11 on PC)</p>
+        </div>
+      )}
     </div>
   );
 }

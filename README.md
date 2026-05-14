@@ -55,7 +55,7 @@ Key ideas:
 
 ---
 
-## Project structure (high level)
+## Project structure
 
 ```
 src/

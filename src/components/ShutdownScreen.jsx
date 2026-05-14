@@ -15,7 +15,15 @@ export default function ShutdownScreen({ onShutdownComplete }) {
 
       if (elapsed >= duration) {
         clearInterval(interval);
-        setTimeout(onShutdownComplete, 500);
+
+        try {
+          window.close();
+        } catch (e) {}
+
+        // Fallback: if the browser prevented closing, return to login
+        setTimeout(() => {
+          if (typeof onShutdownComplete === 'function') onShutdownComplete();
+        }, 700);
       }
     }, 50);
 

@@ -179,13 +179,12 @@ export default function ProfileWindow({ onClose, onMinimize, onMaximize, onFocus
                 <div className="sidebar-item"><img className="icon" src="/assets/icons/console.png" alt="" /><span>Frontend & Backend</span></div>
                 <div className="sidebar-item"><img className="icon" src="/assets/icons/web&mobile.png" alt="" /><span>Web & Mobile</span></div>
                 <div className="sidebar-item"><img className="icon" src="/assets/icons/api.png" alt="" /><span>API integration</span></div>
-                <div className="sidebar-item"><img className="icon" src="/assets/icons/endtoend.png" alt="" /><span>End‑to‑end development</span></div>
-                <div className="sidebar-item"><img className="icon" src="/assets/icons/solve.png" alt="" /><span>Problem solving</span></div>
               </div>
             </div>
             <div className="sidebar-section">
               <div className="sidebar-title">Tech stack</div>
               <div className="sidebar-list">
+                <div className="sidebar-item"><img className="icon" src="/assets/icons/csharp.png" alt="" /><span>C#</span></div>
                 <div className="sidebar-item"><img className="icon" src="/assets/icons/reactnative.png" alt="" /><span>React Native</span></div>
                 <div className="sidebar-item"><img className="icon" src="/assets/icons/reactjs.png" alt="" /><span>ReactJS</span></div>
                 <div className="sidebar-item"><img className="icon" src="/assets/icons/javascript.png" alt="" /><span>JavaScript</span></div>
@@ -212,7 +211,7 @@ export default function ProfileWindow({ onClose, onMinimize, onMaximize, onFocus
               </div>
                 <div className="about-content">
                   <p className="about-paragraph">
-                    I am a final-year Computing student currently completing my OJT as part of my graduation. I am focused on becoming a full-stack, web, and mobile developer, with a strong interest in building real-world applications that are both functional and well-designed. I consider myself a fast learner who adapts quickly, can work independently when needed, and collaborates well in a team environment.
+                    I am a Fresher Computing focused on becoming a full-stack, web, and mobile developer, with a strong interest in building real-world applications that are both functional and well-designed. I consider myself a fast learner who adapts quickly, can work independently when needed, and collaborates well in a team environment.
                   </p>
 
                   <p className="about-paragraph">

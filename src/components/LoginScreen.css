@@ -231,6 +231,57 @@
   }
 }
 
+.sign-in-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fullscreen-note {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 8px;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.2;
+  text-transform: none;
+}
+
+.sign-in-fixed {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 30;
+  pointer-events: auto;
+}
+
+.sign-in-fixed .fullscreen-note {
+  font-size: 0.8rem;
+  max-width: 220px;
+  margin: 0 0 6px 0;
+}
+
+.sign-in-fixed .sign-in-button {
+  padding: 12px 20px;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .sign-in-fixed {
+    right: 12px;
+    bottom: 12px;
+    gap: 6px;
+  }
+
+  .sign-in-fixed .fullscreen-note {
+    display: none;
+  }
+}
+
 /* Mobile & Tablet Styles */
 @media (max-width: 768px) {
   .login-container {
