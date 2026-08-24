@@ -169,9 +169,9 @@ export default function TerminalWindow({ onClose, onMinimize, onMaximize, onFocu
       case 'about':
         return [
           'Hi, I\'m Dat.',
-          'I\'m a final-year Computing student doing my OJT.',
+          'I\'m a Computing graduate with experience in software development and testing.',
           'I enjoy building applications and learning by doing.',
-          'This portfolio is part of that learning.',
+          'This portfolio showcases some of my projects, skills, and things I\'ve learned along the way.',
           '  ',
         ];
       case 'skills':

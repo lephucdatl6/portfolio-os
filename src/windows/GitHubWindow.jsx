@@ -19,6 +19,36 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
   const [repoInfo, setRepoInfo] = useState(null);
   const [loadingRepo, setLoadingRepo] = useState(true);
 
+  // Helper: fetch with retries and timeout to handle transient 504s
+  const fetchWithRetries = async (url, options = {}, retries = 3, timeout = 8000) => {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+      try {
+        // inject optional GitHub token from Vite env (VITE_GITHUB_TOKEN)
+        const token = typeof import.meta !== 'undefined' ? import.meta.env.VITE_GITHUB_TOKEN : undefined;
+        const authHeader = token ? { Authorization: `token ${token}` } : {};
+        const mergedOptions = {
+          ...options,
+          headers: {
+            ...(options.headers || {}),
+            ...authHeader,
+          },
+          signal: controller.signal,
+        };
+
+        const response = await fetch(url, mergedOptions);
+        clearTimeout(id);
+        return response;
+      } catch (err) {
+        clearTimeout(id);
+        if (attempt === retries) throw err;
+        const backoff = 1000 * Math.pow(2, attempt - 1);
+        await new Promise((r) => setTimeout(r, backoff));
+      }
+    }
+  };
+
   useEffect(() => {
     const centerX = Math.round(window.innerWidth / 2 - size.width / 2);
     const centerY = Math.round((window.innerHeight + 20) / 2 - size.height / 2);
@@ -30,7 +60,7 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
     try {
       setLoadingCommits(true);
       setCommitError(null);
-      const response = await fetch(`https://api.github.com/repos/lephucdatl6/portfolio-os/commits?per_page=${PER_PAGE}&page=${pageToLoad}`);
+      const response = await fetchWithRetries(`https://api.github.com/repos/lephucdatl6/portfolio-os/commits?per_page=${PER_PAGE}&page=${pageToLoad}`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch commits: ${response.status}`);
@@ -81,7 +111,7 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
       const all = [];
 
       while (true) {
-        const response = await fetch(`https://api.github.com/repos/lephucdatl6/portfolio-os/commits?per_page=${PER_PAGE}&page=${pageToLoad}`);
+        const response = await fetchWithRetries(`https://api.github.com/repos/lephucdatl6/portfolio-os/commits?per_page=${PER_PAGE}&page=${pageToLoad}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch commits: ${response.status}`);
         }
@@ -131,7 +161,7 @@ export default function GitHubWindow({ onClose, onMinimize, onMaximize, onFocus,
   const fetchRepoInfo = async () => {
     try {
       setLoadingRepo(true);
-      const response = await fetch('https://api.github.com/repos/lephucdatl6/portfolio-os');
+      const response = await fetchWithRetries('https://api.github.com/repos/lephucdatl6/portfolio-os');
       
       if (!response.ok) {
         throw new Error(`Failed to fetch repo info: ${response.status}`);
